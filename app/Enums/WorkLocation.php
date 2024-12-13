@@ -2,7 +2,9 @@
 
 namespace App\Enums;
 
-enum WorkLocation
+enum WorkLocation: string
 {
-    //
+    case Onsite = 'onsite';
+    case Remote = 'remote';
+    case Hyprid = 'hyprid';
 }

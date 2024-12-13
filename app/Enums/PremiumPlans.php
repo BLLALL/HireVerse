@@ -2,7 +2,8 @@
 
 namespace App\Enums;
 
-enum PremiumPlans
+enum PremiumPlans: string
 {
-    //
+    case Monthly = 'monthly';
+    case Yearly = 'yearly';
 }

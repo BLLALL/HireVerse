@@ -2,6 +2,9 @@
 
 namespace Database\Factories;
 
+use App\Enums\ExperienceLevel;
+use App\Enums\WorkLocation;
+use App\JobType;
 use App\Models\Company;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -19,11 +22,11 @@ class JobFactory extends Factory
     {
         return [
             'title' => fake()->jobTitle(),
-            'type' => fake()->randomElement(['part_time','full_time', 'freelance']),
-            'experience_level' => fake()->randomElement(['junior','mid-senior', 'senior']),
+            'type' => fake()->randomElement(JobType::cases()),
+            'experience_level' => fake()->randomElement(ExperienceLevel::cases()),
             'summary' => fake()->paragraph(),
             'salary' => fake()->numberBetween(500, 10000),
-            'work_location' => fake()->randomElement(['remote', 'hybrid', 'onsite']),
+            'work_location' => fake()->randomElement(WorkLocation::cases()),
             'requirements' => fake()->sentence(),
             'responsibilities' => fake()->paragraph(2),
             'company_id' => Company::factory(),

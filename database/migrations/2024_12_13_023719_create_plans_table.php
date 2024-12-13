@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\PremiumPlans;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -13,7 +14,7 @@ return new class extends Migration
     {
         Schema::create('plans', function (Blueprint $table) {
             $table->id();
-            $table->enum('type', ['monthly', 'yearly'])->default('monthly');
+            $table->enum('type', PremiumPlans::cases())->default('monthly');
             $table->bigInteger('price')->default(0);
             $table->timestamps();
             $table->softDeletes();

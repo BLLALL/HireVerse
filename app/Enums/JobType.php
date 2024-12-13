@@ -2,7 +2,9 @@
 
 namespace App;
 
-enum JobType
+enum JobType: string
 {
-    
+    case PartTime = 'part-time';
+    case FullTime = 'full-time';
+    case Freelance = 'freelance';
 }
