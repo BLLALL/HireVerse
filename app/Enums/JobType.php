@@ -1,10 +1,13 @@
 <?php
 
-namespace App;
+namespace App\Enums;
+use App\traits\EnumHelpers;
 
 enum JobType: string
 {
-    case PartTime = 'part-time';
-    case FullTime = 'full-time';
-    case Freelance = 'freelance';
+    use EnumHelpers;
+
+    case PartTime = "part_time";
+    case FullTime = "full_time";
+    case Freelance = "freelance";
 }

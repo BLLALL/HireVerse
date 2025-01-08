@@ -2,8 +2,12 @@
 
 namespace App\Enums;
 
+use App\traits\EnumHelpers;
+
 enum PremiumPlans: string
 {
-    case Monthly = 'monthly';
-    case Yearly = 'yearly';
+    use EnumHelpers;
+
+    case Monthly = "monthly";
+    case Yearly = "yearly";
 }

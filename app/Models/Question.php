@@ -15,7 +15,6 @@ class Question extends Model
         'score',
     ];
 
-
     public function application(): BelongsTo
     {
         return $this->belongsTo(Application::class);

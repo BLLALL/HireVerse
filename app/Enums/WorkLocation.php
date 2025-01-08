@@ -2,9 +2,13 @@
 
 namespace App\Enums;
 
+use App\traits\EnumHelpers;
+
 enum WorkLocation: string
 {
-    case Onsite = 'onsite';
-    case Remote = 'remote';
-    case Hyprid = 'hyprid';
+    use EnumHelpers;
+
+    case Onsite = "onsite";
+    case Remote = "remote";
+    case Hyprid = "hyprid";
 }
