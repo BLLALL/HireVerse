@@ -4,6 +4,8 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: laravel-app-container
+    volumes:
+      - ./:/app
     restart: always
     networks:
       - docker-network
@@ -15,8 +17,7 @@ services:
       - 81:80
     volumes:
       - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
-      - .:/var/www/html
-      - ./vendor:/var/www/html/vendor
+
     networks:
       - docker-network
     depends_on:
