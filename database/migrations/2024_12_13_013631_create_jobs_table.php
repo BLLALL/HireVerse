@@ -21,7 +21,7 @@ return new class extends Migration {
                 ->enum("experience_level", ExperienceLevel::values())
                 ->default("junior");
             $table->string("summary")->nullable();
-            $table->bigInteger("salary");
+            $table->bigInteger("salary")->nullable();
             $table->string("currency")->default("USD");
             $table->integer("work_hours")->nullable();
             $table
