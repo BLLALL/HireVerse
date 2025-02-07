@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('company_id')->nullable()->constrained('companies');
             $table->foreignId('plan_id')->nullable()->constrained('plans');
+            $table->unique(['company_id', 'plan_id']);
             $table->timestamps();
             $table->softDeletes();
         });

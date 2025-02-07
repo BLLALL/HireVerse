@@ -19,6 +19,7 @@ return new class extends Migration
             $table->foreignId('applicant_id')->nullable()->constrained('applicants');
             $table->foreignId('job_id')->nullable()->constrained('jobs');
             $table->unique(['job_id', 'applicant_id']);
+            $table->date('interview_date')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

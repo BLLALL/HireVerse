@@ -24,11 +24,14 @@ class ApplicantFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => fake()->name(),
+            'first_name' => fake()->firstName(),
+            'last_name' => fake()->lastName(),
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),
             'birthdate' => fake()->date(max: 'now'),
+            'college' => fake()->randomElement(['Faculty of Science', 'Faculty of Computers and Information', 'Faculty of Engineering']),
+            'department' => fake()->randomElement(['Electricity', 'Computer Science', 'Artificial Intelligence']),
             'cv' => fake()->filePath(),
             'job_title' => fake()->randomElement([
                 'Backend developer',
