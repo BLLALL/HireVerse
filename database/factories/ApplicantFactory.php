@@ -24,6 +24,7 @@ class ApplicantFactory extends Factory
     public function definition(): array
     {
         return [
+
             "first_name" => fake()->name(),
             "last_name" => fake()->name(),
             "email" => fake()->unique()->safeEmail(),
@@ -43,6 +44,29 @@ class ApplicantFactory extends Factory
                 "Embedded-Systems Engineer",
                 "Cyber security Engineer",
                 "Game Developer",
+=======
+            'first_name' => fake()->firstName(),
+            'last_name' => fake()->lastName(),
+            'email' => fake()->unique()->safeEmail(),
+            'email_verified_at' => now(),
+            'password' => static::$password ??= Hash::make('password'),
+            'birthdate' => fake()->date(max: 'now'),
+            'college' => fake()->randomElement(['Faculty of Science', 'Faculty of Computers and Information', 'Faculty of Engineering']),
+            'department' => fake()->randomElement(['Electricity', 'Computer Science', 'Artificial Intelligence']),
+            'cv' => fake()->filePath(),
+            'job_title' => fake()->randomElement([
+                'Backend developer',
+                'Frontend Developer',
+                'UI/UX Designer',
+                'ML Developer',
+                'Data Scientist',
+                'Data Analyst',
+                'Data Engineer',
+                'Application Developer',
+                'Embedded-Systems Engineer',
+                'Cyber security Engineer',
+                'Game Developer',
+>>>>>>> 06adc9c3770f77f17aede56de044c83d0dc57759
             ]),
             "github_url" => fake()->randomElement([
                 "github.com/BLLALL",

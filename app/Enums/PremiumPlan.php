@@ -4,7 +4,7 @@ namespace App\Enums;
 
 use App\traits\EnumHelpers;
 
-enum PremiumPlans: string
+enum PremiumPlan: string
 {
     use EnumHelpers;
 

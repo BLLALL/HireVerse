@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\ReviewRating;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -16,10 +17,10 @@ return new class extends Migration
             $table->string('job_title');
             $table->text('body');
             $table->text('employment_status');
-            $table->boolean('is_current_employee')->default(false); 
-            $table->enum('rating', [1, 2, 3, 4, 5]); 
-            $table->foreignId('applicant_id')->nullable()->constrained('applicants'); 
-            $table->foreignId('company_id')->nullable()->constrained('companies'); 
+            $table->boolean('is_current_employee')->default(false);
+            $table->enum('rating', ReviewRating::values())->default('poor');
+            $table->foreignId('applicant_id')->nullable()->constrained('applicants');
+            $table->foreignId('company_id')->nullable()->constrained('companies');
             $table->timestamps();
             $table->softDeletes();
         });
