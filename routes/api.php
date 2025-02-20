@@ -14,17 +14,6 @@ Route::get("/email/verify/{id}", [
     VerificationController::class,
     "verify",
 ])->name("verification.verify");
-Route::get("/email/resend", [AuthController::class, "resend"])->name(
-    "verification.verify"
-);
-
-Route::get("/jobs", [JobController::class, "index"]);
-Route::get("/email/verify/{id}", function (EmailVerificationRequest $request) {
-    $request->fulfill();
-
-    return redirect("/home");
-    event(new Registered($user));
-})->name("verification.verify");
 
 Route::get("email/resend", [VerificationController::class, "resend"])->name(
     "verification.resend"
