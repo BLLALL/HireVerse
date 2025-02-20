@@ -26,11 +26,13 @@ class JobFactory extends Factory
             "experience_level" => fake()->randomElement(
                 ExperienceLevel::values()
             ),
-            "summary" => fake()->paragraph(),
+            "summary" => fake()->sentence(),
             "salary" => fake()->numberBetween(500, 10000),
             "work_location" => fake()->randomElement(WorkLocation::values()),
             "requirements" => fake()->sentence(),
             "responsibilities" => fake()->paragraph(2),
+            "available_to" => fake()->dateTimeBetween("now", "+2 month"),
+            "max_applicants" => fake()->numberBetween(50, 500),
             "company_id" => Company::factory(),
         ];
     }

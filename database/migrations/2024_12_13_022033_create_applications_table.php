@@ -23,16 +23,6 @@ return new class extends Migration {
             $table->foreignId("job_id")->nullable()->constrained("jobs");
             $table->unique(["job_id", "applicant_id"]);
             $table->date("inteview_date")->nullable();
-            $table->string("cv");
-            $table->integer("cv_score")->default(0);
-            $table->boolean("cv_accepted")->default(false);
-            $table
-                ->foreignId("applicant_id")
-                ->nullable()
-                ->constrained("applicants");
-            $table->foreignId("job_id")->nullable()->constrained("jobs");
-            $table->unique(["job_id", "applicant_id"]);
-            $table->date("interview_date")->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

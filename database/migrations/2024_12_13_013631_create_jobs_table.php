@@ -17,16 +17,25 @@ return new class extends Migration {
             $table->id();
             $table->string("title");
             $table->enum("type", JobType::values())->default("full_time");
-            $table->enum("experience_level", ExperienceLevel::values())->default("junior");
+            $table
+                ->enum("experience_level", ExperienceLevel::values())
+                ->default("junior");
             $table->string("summary")->nullable();
             $table->bigInteger("salary")->nullable();
             $table->string("currency")->default("USD");
             $table->integer("work_hours")->nullable();
-            $table->enum("work_location", WorkLocation::values())->default("onsite");
+            $table
+                ->enum("work_location", WorkLocation::values())
+                ->default("onsite");
             $table->text("requirements");
             $table->text("responsibilities");
             $table->boolean("is_available")->default(false);
-            $table->foreignId("company_id")->nullable()->constrained("companies");
+            $table->dateTime("available_to")->nullable();
+            $table->smallInteger("max_applicants")->nullable();
+            $table
+                ->foreignId("company_id")
+                ->nullable()
+                ->constrained("companies");
             $table->timestamps();
             $table->softDeletes();
         });
