@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Applicant;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Auth\Events\Registered;
 
 class VerificationController extends Controller
 {
