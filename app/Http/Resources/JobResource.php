@@ -28,13 +28,12 @@ class JobResource extends JsonResource
                 "company_logo" => $this->company->logo,
                 "salary" => $this->salary,
                 "currency" => $this->currency,
+                "summary" => $this->summary,
                 $this->mergeWhen(!$request->routeIs(["jobs.index"]), [
-                    "summary" => $this->summary,
                     "workHours" => $this->work_hours,
                     "requirements" => $this->requirements,
                     "responsibilities" => $this->responsibilities,
                 ]),
-
                 "createdAt" => $this->created_at,
                 "updatedAt" => $this->updated_at,
             ],

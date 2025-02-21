@@ -11,6 +11,8 @@ class JobController extends Controller
 {
     public function index(): mixed
     {
+        \Log::info("Token: ", [request()->user()]);
+        \Log::info("Token: ", [request()->bearerToken()]);
         return JobResource::collection(Job::all());
     }
 
@@ -24,28 +26,35 @@ class JobController extends Controller
         $attributes = $request->validated();
 
         // $attributes['applicant_id'] = auth()->id();
-        $attributes['applicant_id'] = 1;
+        $attributes["applicant_id"] = 1;
 
         $exists = Application::where([
-            ['job_id', $attributes['job_id']],
-            ['applicant_id', $attributes['applicant_id']]
+            ["job_id", $attributes["job_id"]],
+            ["applicant_id", $attributes["applicant_id"]],
         ])->exists();
 
         if ($exists) {
-            return response()->json([
-                'status' => 422,
-                'message' => 'You have already applied to this job before 🤗!'
-            ], 422);
+            return response()->json(
+                [
+                    "status" => 422,
+                    "message" =>
+                        "You have already applied to this job before 🤗!",
+                ],
+                422
+            );
         }
 
-        $cv = $request->file('cv')->store('applications');
-        $attributes['cv'] = $cv;
+        $cv = $request->file("cv")->store("applications");
+        $attributes["cv"] = $cv;
 
         Application::create($attributes);
 
-        return response()->json([
-            'status' => 201,
-            'message' => 'You have applied to this job successfully 🤗!'
-        ], 201);
+        return response()->json(
+            [
+                "status" => 201,
+                "message" => "You have applied to this job successfully 🤗!",
+            ],
+            201
+        );
     }
 }

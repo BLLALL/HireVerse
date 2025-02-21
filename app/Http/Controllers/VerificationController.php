@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Applicant;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class VerificationController extends Controller
 {
@@ -12,7 +13,8 @@ class VerificationController extends Controller
         if (!$request->hasValidSignature()) {
             return response()->json(
                 [
-                    "message" => "You are not authorized.",
+                    "status" => 401,
+                    "message" => "You are not authorized",
                 ],
                 401
             );
@@ -23,34 +25,46 @@ class VerificationController extends Controller
             $applicant->markEmailAsVerified();
         }
 
-        $applicant["token"] = $applicant->createToken(
+        $token = $applicant->createToken(
             "API token for " . $applicant->email,
             ["*"],
-            now()->addDays(30)
+            now()->addMonth()
         )->plainTextToken;
 
-        return response()->json([
-            "message" => "Email verified successfully",
-            "data" => $applicant,
-        ]);
-    }
-
-    public function resend()
-    {
-        if (Auth::user()->hasVerifiedEmail()) {
-            return response()->json(
-                [
-                    "message" => "You are not authorized.",
-                ],
-                253
-            );
-        }
-        auth()->user()->sendEmailVerificationNotification();
         return response()->json(
             [
-                "message" => "Email verification link sent.",
+                "status" => 200,
+                "message" => "Email verified successfully",
+                "data" => [
+                    "user" => $applicant,
+                    "token" => $token,
+                ],
             ],
-            253
+            200
+        );
+    }
+
+    public function resend(Request $request)
+    {
+        $applicant = $request->user();
+        if ($applicant->hasVerifiedEmail()) {
+            return response()->json(
+                [
+                    "status" => 409,
+                    "message" => "Email already verified",
+                ],
+                409
+            );
+        }
+        event(new Registered($applicant));
+        $applicant->sendEmailVerificationNotification();
+
+        return response()->json(
+            [
+                "status" => 200,
+                "message" => "Email verification link sent",
+            ],
+            200
         );
     }
 }

@@ -14,7 +14,7 @@ return [
 
     "defaults" => [
         "guard" => env("AUTH_GUARD", "api"),
-        "passwords" => env("AUTH_PASSWORD_BROKER", "users"),
+        "passwords" => env("AUTH_PASSWORD_BROKER", "applicants"),
     ],
 
     /*
@@ -37,11 +37,11 @@ return [
     "guards" => [
         "web" => [
             "driver" => "session",
-            "provider" => "users",
+            "provider" => "applicants",
         ],
         "api" => [
             "driver" => "sanctum",
-            "provider" => "users",
+            "provider" => "applicants",
         ],
     ],
 
@@ -63,9 +63,9 @@ return [
     */
 
     "providers" => [
-        "users" => [
+        "applicants" => [
             "driver" => "eloquent",
-            "model" => env("AUTH_MODEL", App\Models\User::class),
+            "model" => env("AUTH_MODEL", App\Models\Applicant::class),
         ],
 
         // 'users' => [
@@ -94,8 +94,8 @@ return [
     */
 
     "passwords" => [
-        "users" => [
-            "provider" => "users",
+        "applicants" => [
+            "provider" => "applicants",
             "table" => env(
                 "AUTH_PASSWORD_RESET_TOKEN_TABLE",
                 "password_reset_tokens"
