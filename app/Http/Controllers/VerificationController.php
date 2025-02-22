@@ -57,7 +57,7 @@ class VerificationController extends Controller
             );
         }
         event(new Registered($applicant));
-        $applicant->sendEmailVerificationNotification();
+        // $applicant->sendEmailVerificationNotification();
 
         return response()->json(
             [

@@ -27,7 +27,9 @@ class Applicant extends Authenticatable implements MustVerifyEmail
         "last_name",
         "email",
         "password",
-        "birth_date",
+        "provider",
+        "provider_id",
+        "birthdate",
         "cv",
         "job_title",
         "github_url",
@@ -77,5 +79,10 @@ class Applicant extends Authenticatable implements MustVerifyEmail
             "employment_status",
             "is_current_employee"
         );
+    }
+
+    public function generateToken($abilities = ["*"], $to = null)
+    {
+        return $this->createToken("Token for {$this->email}", $abilities, $to ?? now()->addMonth())->plainTextToken;
     }
 }

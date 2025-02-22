@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\Api\RegisterApplicantRequest;
-use App\Http\Requests\LoginAplicantRequest;
+use App\Http\Requests\LoginApplicantRequest;
 use App\Models\Applicant;
 use Illuminate\Http\Request;
 use Illuminate\Auth\Events\Registered;
@@ -17,7 +17,7 @@ class AuthController extends Controller
         $applicant = Applicant::create($request->validated());
 
         event(new Registered($applicant));
-        $applicant->sendEmailVerificationNotification();
+        // $applicant->sendEmailVerificationNotification();
 
         $verificationToken = $applicant->createToken(
             "email-verification",
@@ -35,7 +35,7 @@ class AuthController extends Controller
         );
     }
 
-    public function login(LoginAplicantRequest $request)
+    public function login(LoginApplicantRequest $request)
     {
         $request->validated();
         if (
