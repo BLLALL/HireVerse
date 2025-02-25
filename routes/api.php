@@ -19,8 +19,8 @@ Route::middleware(["throttle:6,1", "abilities:email-verification"])->group(funct
 
 Route::middleware("auth:sanctum", "ability:*")->group(function () {
     Route::post("/logout", [AuthController::class, "logout"]);
-    Route::apiResource("/jobs", JobController::class)->only(["index", "show"]);
-    Route::apiResource("/companies", CompanyController::class)->only(["index", "show"]);
+   # Route::apiResource("/jobs", JobController::class)->only(["index", "show"]);
+   # Route::apiResource("/companies", CompanyController::class)->only(["index", "show"]);
     Route::post("/jobs/apply", [JobController::class, "apply"]);
 
     Route::get("/users", function () {
@@ -28,8 +28,13 @@ Route::middleware("auth:sanctum", "ability:*")->group(function () {
     });
 });
 
+Route::apiResource("/jobs", JobController::class)->only(["index", "show"]);
+Route::apiResource("/companies", CompanyController::class)->only(["index", "show"]);
+
 Route::prefix('oauth')->controller(OAuthController::class)->group(function () {
     Route::get('{provider}/redirect', 'redirect');
     Route::get('{provider}/callback', 'callback');
     Route::post('{provider}/complete', 'complete');
 });
+
+Route::get('test', fn() => 'HireVerse - HierServe');
