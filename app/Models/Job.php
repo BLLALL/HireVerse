@@ -5,7 +5,6 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\{Model, SoftDeletes};
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 class Job extends Model
@@ -43,6 +42,10 @@ class Job extends Model
     public function skills(): MorphMany
     {
         return $this->morphMany(Skill::class, 'skillable');
-    }   
+    }
 
+    public function getSkillsAttribute() 
+    {
+        return $this->skills()->pluck('title');
+    }
 }

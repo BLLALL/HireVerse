@@ -23,7 +23,7 @@ class CompanyFactory extends Factory
     {
         return [
             "name" => fake()->company(),
-            "business_email" => fake()->companyEmail(),
+            "email" => fake()->companyEmail(),
             "password" => (static::$password ??= Hash::make("password")),
             "location" => fake()->randomElement([
                 "Toukh",

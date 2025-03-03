@@ -2,69 +2,51 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Applicant;
+use App\Traits\{ApiResponses, TokenHelpers};
 use Illuminate\Http\Request;
 use Illuminate\Auth\Events\Registered;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class VerificationController extends Controller
 {
-    public function verify($applicant_id, Request $request)
+    use ApiResponses, TokenHelpers;
+
+    public function verify(Request $request, $type, $id)
     {
-        if (!$request->hasValidSignature()) {
-            return response()->json(
-                [
-                    "status" => 401,
-                    "message" => "You are not authorized",
-                ],
-                401
-            );
-        }
-        $applicant = Applicant::findOrFail($applicant_id);
-
-        if (!$applicant->hasVerifiedEmail()) {
-            $applicant->markEmailAsVerified();
+        if (! $request->hasValidSignature()) {
+            return $this->unauthorized("You are not authorized");
         }
 
-        $token = $applicant->createToken(
-            "API token for " . $applicant->email,
-            ["*"],
-            now()->addMonth()
-        )->plainTextToken;
+        if (! in_array($type, ['applicant', 'company'])) {
+            throw new NotFoundHttpException();
+        }
+        $model = 'App\\Models\\' . ucwords($type);
 
-        return response()->json(
+        $user = $model::findOrFail($id);
+
+        if ($user->hasVerifiedEmail()) {
+            return $this->error("Email already verified", 409);
+        }
+
+        $user->markEmailAsVerified();
+
+        return $this->ok(
+            "Email verified successfully",
             [
-                "status" => 200,
-                "message" => "Email verified successfully",
-                "data" => [
-                    "user" => $applicant,
-                    "token" => $token,
-                ],
-            ],
-            200
+                $type => $user,
+                "token" => $this->generateToken($user),
+            ]
         );
     }
 
     public function resend(Request $request)
     {
-        $applicant = $request->user();
-        if ($applicant->hasVerifiedEmail()) {
-            return response()->json(
-                [
-                    "status" => 409,
-                    "message" => "Email already verified",
-                ],
-                409
-            );
+        $user = $request->user();
+        if ($user->hasVerifiedEmail()) {
+            return $this->error("Email already verified", 409);
         }
-        event(new Registered($applicant));
-        // $applicant->sendEmailVerificationNotification();
+        event(new Registered($user));
 
-        return response()->json(
-            [
-                "status" => 200,
-                "message" => "Email verification link sent",
-            ],
-            200
-        );
+        return $this->ok("Email verification link sent");
     }
 }

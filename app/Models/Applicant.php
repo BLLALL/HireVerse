@@ -2,13 +2,12 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
@@ -81,8 +80,9 @@ class Applicant extends Authenticatable implements MustVerifyEmail
         );
     }
 
-    public function generateToken($abilities = ["*"], $to = null)
+    public function getSkillsAttribute() 
     {
-        return $this->createToken("Token for {$this->email}", $abilities, $to ?? now()->addMonth())->plainTextToken;
+        return $this->skills()->pluck('title');
     }
+    
 }

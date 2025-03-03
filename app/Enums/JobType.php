@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Enums;
-use App\traits\EnumHelpers;
+use App\Traits\EnumHelpers;
 
 enum JobType: string
 {

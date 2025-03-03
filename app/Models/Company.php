@@ -2,28 +2,43 @@
 
 namespace App\Models;
 
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
 
-class Company extends Model
+class Company extends Authenticatable implements MustVerifyEmail
 {
     /** @use HasFactory<\Database\Factories\CompanyFactory> */
-    use HasFactory, SoftDeletes;
+    use HasFactory, Notifiable, SoftDeletes, HasApiTokens;
+
 
     protected $fillable = [
         'name',
-        'business_email',
-        'location',
-        'website_url',
         'ceo',
+        'email',
+        'password',
+        'location',
+        'employee_no',
+        'website_url',
         'description',
         'insights',
         'industry',
-        'employee_no',
     ];
+
+    protected $hidden = ["password"];
+
+    protected function casts(): array
+    {
+        return [
+            "email_verified_at" => "datetime",
+            "password" => "hashed",
+        ];
+    }
 
     public function jobs(): HasMany
     {
@@ -32,7 +47,7 @@ class Company extends Model
 
     public function plans(): BelongsToMany
     {
-        return $this->BelongsToMany(Plan::class, 'subscriptions')->withPivot('type', 'price');
+        return $this->belongsToMany(Plan::class, 'subscriptions')->withPivot('type', 'price');
     }
 
     public function applicants(): BelongsToMany
@@ -44,4 +59,5 @@ class Company extends Model
             'is_current_employee'
         );
     }
+
 }

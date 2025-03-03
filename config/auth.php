@@ -35,12 +35,17 @@ return [
     */
 
     "guards" => [
-        "web" => [
-            "driver" => "session",
-            "provider" => "applicants",
-        ],
         "api" => [
             "driver" => "sanctum",
+            "provider" => "applicants",
+        ],
+        "api_company" => [
+            "driver" => "sanctum",
+            "provider" => "companies",
+        ],
+        
+        "web" => [
+            "driver" => "session",
             "provider" => "applicants",
         ],
     ],
@@ -65,7 +70,12 @@ return [
     "providers" => [
         "applicants" => [
             "driver" => "eloquent",
-            "model" => env("AUTH_MODEL", App\Models\Applicant::class),
+            "model" => App\Models\Applicant::class,
+        ],
+        
+        "companies" => [
+            "driver" => "eloquent",
+            "model" => App\Models\Company::class,
         ],
 
         // 'users' => [

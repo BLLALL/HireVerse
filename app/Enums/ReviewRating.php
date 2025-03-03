@@ -2,7 +2,7 @@
 
 namespace App\Enums;
 
-use App\traits\EnumHelpers;
+use App\Traits\EnumHelpers;
 
 enum ReviewRating: string
 {

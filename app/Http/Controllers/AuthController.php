@@ -2,35 +2,26 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\Api\RegisterApplicantRequest;
-use App\Http\Requests\LoginApplicantRequest;
-use App\Models\Applicant;
-use Illuminate\Http\Request;
+use App\Http\Requests\{LoginApplicantRequest, RegisterApplicantRequest};
+use App\Traits\{ApiResponses, TokenHelpers};
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Applicant;
 
 class AuthController extends Controller
 {
+    use ApiResponses, TokenHelpers;
+    
     public function register(RegisterApplicantRequest $request)
     {
-        $validatedData = $request->validated();
         $applicant = Applicant::create($request->validated());
 
         event(new Registered($applicant));
-        // $applicant->sendEmailVerificationNotification();
 
-        $verificationToken = $applicant->createToken(
-            "email-verification",
-            ["email-verification"],
-            now()->addHours(3)
-        )->plainTextToken;
-        return response()->json(
-            [
-                "status" => 201,
-                "message" =>
-                    "user successfully created, please verify your email",
-                "verification_token" => $verificationToken,
-            ],
+        $verificationToken = $applicant->createToken("email-verification", ["email-verification"], now()->addHours(3))->plainTextToken;
+        return $this->success(
+            "Applicant successfully created, please verify your email",
+            ["verificationToken" => $verificationToken],
             201
         );
     }
@@ -38,39 +29,18 @@ class AuthController extends Controller
     public function login(LoginApplicantRequest $request)
     {
         $request->validated();
-        if (
-            !auth()->guard("web")->attempt($request->only("email", "password"))
-        ) {
-            return response()->json(
-                [
-                    "status" => 401,
-                    "message" => "Invalid credentials",
-                ],
-                401
-            );
+        $applicant = Applicant::firstWhere("email", $request->email);
+
+        if (!auth()->guard('web')->attempt($request->only(['email', 'password']))) {
+            return $this->unauthorized("Invalid credentials!");
         }
 
-        $applicant = Applicant::firstWhere("email", $request->email);
-        $token = $applicant->createToken(
-            "API token for " . $applicant->email,
-            ["*"],
-            now()->addMonth()
-        )->plainTextToken;
+        $token = $applicant->createToken("API token for " . $applicant->email, ["*"], now()->addMonth())->plainTextToken;
+        return $this->ok("Authenticated", ["applicant" => $applicant, "token" => $token]);
 
-        return response()->json(
-            [
-                "status" => 200,
-                "message" => "authenticated",
-                "data" => [
-                    "user" => $applicant,
-                    "token" => $token,
-                ],
-            ],
-            200
-        );
     }
 
-    public function logout(Request $request)
+    public function logout()
     {
         Auth::user()->currentAccessToken()->delete();
         return response()->noContent();

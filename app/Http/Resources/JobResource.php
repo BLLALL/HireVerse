@@ -23,16 +23,17 @@ class JobResource extends JsonResource
                 "experienceLevel" => $this->experience_level,
                 "workLocation" => $this->work_location,
                 "isAvailable" => $this->is_available,
-                "available_to" => fake()->date(),
-                "max_applicants" => fake()->numberBetween(50, 500),
-                "company_logo" => $this->company->logo,
+                "availableTo" => $this->available_to,
+                "maxApplicants" => $this->maxApplicants,
+                "companyLogo" => $this->company->logo,
                 "salary" => $this->salary,
                 "currency" => $this->currency,
                 "summary" => $this->summary,
                 $this->mergeWhen(!$request->routeIs(["jobs.index"]), [
-                    "workHours" => $this->work_hours,
                     "requirements" => $this->requirements,
+                    "skills" => $this->skills,
                     "responsibilities" => $this->responsibilities,
+                    "workHours" => $this->work_hours,
                 ]),
                 "createdAt" => $this->created_at,
                 "updatedAt" => $this->updated_at,
@@ -54,7 +55,7 @@ class JobResource extends JsonResource
                 ],
             ],
 
-            "includes" => [new CompanyResource($this->whenLoaded("company"))],
+            "includes" => [CompanyResource::make($this->whenLoaded("company"))],
         ];
     }
 }

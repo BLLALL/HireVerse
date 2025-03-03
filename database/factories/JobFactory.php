@@ -23,9 +23,7 @@ class JobFactory extends Factory
         return [
             "title" => fake()->jobTitle(),
             "type" => fake()->randomElement(JobType::values()),
-            "experience_level" => fake()->randomElement(
-                ExperienceLevel::values()
-            ),
+            "experience_level" => fake()->randomElement(ExperienceLevel::values()),
             "summary" => fake()->sentence(),
             "salary" => fake()->numberBetween(500, 10000),
             "work_location" => fake()->randomElement(WorkLocation::values()),
