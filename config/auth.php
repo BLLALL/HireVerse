@@ -12,9 +12,9 @@ return [
     |
     */
 
-    "defaults" => [
-        "guard" => env("AUTH_GUARD", "api"),
-        "passwords" => env("AUTH_PASSWORD_BROKER", "applicants"),
+    'defaults' => [
+        'guard' => env('AUTH_GUARD', 'api'),
+        'passwords' => env('AUTH_PASSWORD_BROKER', 'applicants'),
     ],
 
     /*
@@ -34,19 +34,19 @@ return [
     |
     */
 
-    "guards" => [
-        "api" => [
-            "driver" => "sanctum",
-            "provider" => "applicants",
+    'guards' => [
+        'api' => [
+            'driver' => 'sanctum',
+            'provider' => 'applicants',
         ],
-        "api_company" => [
-            "driver" => "sanctum",
-            "provider" => "companies",
+        'api_company' => [
+            'driver' => 'sanctum',
+            'provider' => 'companies',
         ],
-        
-        "web" => [
-            "driver" => "session",
-            "provider" => "applicants",
+
+        'web' => [
+            'driver' => 'session',
+            'provider' => 'applicants',
         ],
     ],
 
@@ -67,15 +67,15 @@ return [
     |
     */
 
-    "providers" => [
-        "applicants" => [
-            "driver" => "eloquent",
-            "model" => App\Models\Applicant::class,
+    'providers' => [
+        'applicants' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Applicant::class,
         ],
-        
-        "companies" => [
-            "driver" => "eloquent",
-            "model" => App\Models\Company::class,
+
+        'companies' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Company::class,
         ],
 
         // 'users' => [
@@ -103,15 +103,15 @@ return [
     |
     */
 
-    "passwords" => [
-        "applicants" => [
-            "provider" => "applicants",
-            "table" => env(
-                "AUTH_PASSWORD_RESET_TOKEN_TABLE",
-                "password_reset_tokens"
+    'passwords' => [
+        'applicants' => [
+            'provider' => 'applicants',
+            'table' => env(
+                'AUTH_PASSWORD_RESET_TOKEN_TABLE',
+                'password_reset_tokens'
             ),
-            "expire" => 60,
-            "throttle" => 60,
+            'expire' => 60,
+            'throttle' => 60,
         ],
     ],
 
@@ -126,5 +126,5 @@ return [
     |
     */
 
-    "password_timeout" => env("AUTH_PASSWORD_TIMEOUT", 10800),
+    'password_timeout' => env('AUTH_PASSWORD_TIMEOUT', 10800),
 ];

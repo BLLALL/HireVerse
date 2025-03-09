@@ -6,15 +6,15 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
-use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
 class Applicant extends Authenticatable implements MustVerifyEmail
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable, SoftDeletes, HasApiTokens;
+    use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
@@ -22,17 +22,17 @@ class Applicant extends Authenticatable implements MustVerifyEmail
      * @var list<string>
      */
     protected $fillable = [
-        "first_name",
-        "last_name",
-        "email",
-        "password",
-        "provider",
-        "provider_id",
-        "birthdate",
-        "cv",
-        "job_title",
-        "github_url",
-        "linkedin_url",
+        'first_name',
+        'last_name',
+        'email',
+        'password',
+        'provider',
+        'provider_id',
+        'birthdate',
+        'cv',
+        'job_title',
+        'github_url',
+        'linkedin_url',
     ];
 
     /**
@@ -40,7 +40,7 @@ class Applicant extends Authenticatable implements MustVerifyEmail
      *
      * @var list<string>
      */
-    protected $hidden = ["password", "remember_token"];
+    protected $hidden = ['password', 'remember_token'];
 
     /**
      * Get the attributes that should be cast.
@@ -50,8 +50,8 @@ class Applicant extends Authenticatable implements MustVerifyEmail
     protected function casts(): array
     {
         return [
-            "email_verified_at" => "datetime",
-            "password" => "hashed",
+            'email_verified_at' => 'datetime',
+            'password' => 'hashed',
         ];
     }
 
@@ -59,30 +59,29 @@ class Applicant extends Authenticatable implements MustVerifyEmail
     {
         $this->belongsToMany(
             Job::class,
-            "applications",
-            "job_id",
-            "applicant_id"
-        )->withPivot("cv", "cv_score", "cv_accepted");
+            'applications',
+            'job_id',
+            'applicant_id'
+        )->withPivot('cv', 'cv_score', 'cv_accepted');
     }
 
     public function skills(): MorphMany
     {
-        return $this->morphMany(Skill::class, "skillable");
+        return $this->morphMany(Skill::class, 'skillable');
     }
 
     public function companies(): BelongsToMany
     {
-        return $this->belongsToMany(Company::class, "reviews")->withPivot(
-            "rating",
-            "body",
-            "employment_status",
-            "is_current_employee"
+        return $this->belongsToMany(Company::class, 'reviews')->withPivot(
+            'rating',
+            'body',
+            'employment_status',
+            'is_current_employee'
         );
     }
 
-    public function getSkillsAttribute() 
+    public function getSkillsAttribute()
     {
         return $this->skills()->pluck('title');
     }
-    
 }

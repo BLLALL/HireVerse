@@ -8,9 +8,9 @@ enum ReviewRating: string
 {
     use EnumHelpers;
 
-    case Poor = "poor";
-    case Fair = "fair";
-    case Average = "average";
-    case Good = "good";
-    case Excellent = "excellent";
+    case Poor = 'poor';
+    case Fair = 'fair';
+    case Average = 'average';
+    case Good = 'good';
+    case Excellent = 'excellent';
 }

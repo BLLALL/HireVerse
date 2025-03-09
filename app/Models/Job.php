@@ -2,15 +2,17 @@
 
 namespace App\Models;
 
+use App\Traits\Filtrable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\{Model, SoftDeletes};
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Job extends Model
 {
     /** @use HasFactory<\Database\Factories\JobFactory> */
-    use HasFactory, SoftDeletes;
+    use Filtrable, HasFactory, SoftDeletes;
 
     protected $fillable = [
         'title',
@@ -32,7 +34,6 @@ class Job extends Model
         return $this->belongsTo(Company::class);
     }
 
-
     public function applicants()
     {
         $this->belongsToMany(Applicant::class, 'applications', 'applicant_id', 'job_id')
@@ -44,7 +45,7 @@ class Job extends Model
         return $this->morphMany(Skill::class, 'skillable');
     }
 
-    public function getSkillsAttribute() 
+    public function getSkillsAttribute()
     {
         return $this->skills()->pluck('title');
     }

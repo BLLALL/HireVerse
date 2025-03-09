@@ -8,7 +8,7 @@ enum WorkLocation: string
 {
     use EnumHelpers;
 
-    case Onsite = "onsite";
-    case Remote = "remote";
-    case Hyprid = "hyprid";
+    case Onsite = 'onsite';
+    case Remote = 'remote';
+    case Hyprid = 'hybrid';
 }

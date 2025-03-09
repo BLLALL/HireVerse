@@ -2,17 +2,21 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\{LoginCompanyRequest, RegisterCompanyRequest};
-use App\Traits\{ApiResponses, TokenHelpers};
-use Illuminate\Support\Facades\{Auth, Hash};
-use Illuminate\Auth\Events\Registered;
+use App\Http\Requests\LoginCompanyRequest;
+use App\Http\Requests\RegisterCompanyRequest;
 use App\Models\Company;
+use App\Traits\ApiResponses;
+use App\Traits\TokenHelpers;
+use Illuminate\Auth\Events\Registered;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class CompanyAuthController extends Controller
 {
     use ApiResponses, TokenHelpers;
 
-    public function register(RegisterCompanyRequest $request) {
+    public function register(RegisterCompanyRequest $request)
+    {
 
         $company = Company::create($request->validated());
         event(new Registered($company));
@@ -38,6 +42,7 @@ class CompanyAuthController extends Controller
     public function logout()
     {
         Auth::user()->currentAccessToken()->delete();
+
         return response()->noContent();
     }
 }

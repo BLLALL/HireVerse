@@ -21,7 +21,7 @@ class StoreJobApplicationRequest extends FormRequest
      */
     public function rules(): array
     {
-        
+
         return [
             'job_id' => 'required|integer|exists:jobs,id',
             'cv' => 'required|file|mimes:pdf|max:10240',

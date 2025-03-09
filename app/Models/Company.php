@@ -6,16 +6,15 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
 class Company extends Authenticatable implements MustVerifyEmail
 {
     /** @use HasFactory<\Database\Factories\CompanyFactory> */
-    use HasFactory, Notifiable, SoftDeletes, HasApiTokens;
-
+    use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
 
     protected $fillable = [
         'name',
@@ -30,13 +29,13 @@ class Company extends Authenticatable implements MustVerifyEmail
         'industry',
     ];
 
-    protected $hidden = ["password"];
+    protected $hidden = ['password'];
 
     protected function casts(): array
     {
         return [
-            "email_verified_at" => "datetime",
-            "password" => "hashed",
+            'email_verified_at' => 'datetime',
+            'password' => 'hashed',
         ];
     }
 
@@ -59,5 +58,4 @@ class Company extends Authenticatable implements MustVerifyEmail
             'is_current_employee'
         );
     }
-
 }

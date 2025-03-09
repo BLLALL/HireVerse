@@ -8,6 +8,6 @@ enum PremiumPlan: string
 {
     use EnumHelpers;
 
-    case Monthly = "monthly";
-    case Yearly = "yearly";
+    case Monthly = 'monthly';
+    case Yearly = 'yearly';
 }

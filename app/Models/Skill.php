@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Skill extends Model
 {
     use SoftDeletes;
-    
+
     protected $fillable = [
         'title',
         'skillable_id',

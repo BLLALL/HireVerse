@@ -22,10 +22,10 @@ class RegisterApplicantRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "first_name" => ["required", "string", "max:50"],
-            "last_name" => ["required", "string", "max:50"],
-            "email" => ["required", "email", "unique:applicants,email", "max:80"],
-            "password" => ["required", "string", "min:8"],
+            'first_name' => ['required', 'string', 'max:50'],
+            'last_name' => ['required', 'string', 'max:50'],
+            'email' => ['required', 'email', 'unique:applicants,email', 'max:80'],
+            'password' => ['required', 'string', 'min:8'],
         ];
     }
 }

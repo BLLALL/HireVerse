@@ -2,7 +2,8 @@
 
 namespace App\traits;
 
-use App\Models\{Applicant, Company};
+use App\Models\Applicant;
+use App\Models\Company;
 
 trait TokenHelpers
 {

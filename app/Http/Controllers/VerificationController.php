@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Traits\{ApiResponses, TokenHelpers};
-use Illuminate\Http\Request;
+use App\Traits\ApiResponses;
+use App\Traits\TokenHelpers;
 use Illuminate\Auth\Events\Registered;
+use Illuminate\Http\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class VerificationController extends Controller
@@ -14,27 +15,27 @@ class VerificationController extends Controller
     public function verify(Request $request, $type, $id)
     {
         if (! $request->hasValidSignature()) {
-            return $this->unauthorized("You are not authorized");
+            return $this->unauthorized('You are not authorized');
         }
 
         if (! in_array($type, ['applicant', 'company'])) {
-            throw new NotFoundHttpException();
+            throw new NotFoundHttpException;
         }
-        $model = 'App\\Models\\' . ucwords($type);
+        $model = 'App\\Models\\'.ucwords($type);
 
         $user = $model::findOrFail($id);
 
         if ($user->hasVerifiedEmail()) {
-            return $this->error("Email already verified", 409);
+            return $this->error('Email already verified', 409);
         }
 
         $user->markEmailAsVerified();
 
         return $this->ok(
-            "Email verified successfully",
+            'Email verified successfully',
             [
                 $type => $user,
-                "token" => $this->generateToken($user),
+                'token' => $this->generateToken($user),
             ]
         );
     }
@@ -43,10 +44,10 @@ class VerificationController extends Controller
     {
         $user = $request->user();
         if ($user->hasVerifiedEmail()) {
-            return $this->error("Email already verified", 409);
+            return $this->error('Email already verified', 409);
         }
         event(new Registered($user));
 
-        return $this->ok("Email verification link sent");
+        return $this->ok('Email verification link sent');
     }
 }

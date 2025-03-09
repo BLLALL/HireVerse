@@ -23,7 +23,7 @@ class LoginApplicantRequest extends FormRequest
     {
         return [
             'email' => 'required|email|exists:applicants,email',
-            'password' => 'required|string|min:8'
+            'password' => 'required|string|min:8',
         ];
     }
 }

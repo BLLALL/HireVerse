@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Plan extends Model
 {
-    
     protected $fillable = [
         'type',
         'price',
@@ -18,6 +17,4 @@ class Plan extends Model
         return $this->belongsToMany(Company::class, 'subscriptions')
             ->withPivot('type', 'price');
     }
-
-
 }

@@ -8,7 +8,7 @@ enum QuestionDifficulty: string
 {
     use EnumHelpers;
 
-    case Easy = "easy";
-    case Medium = "medium";
-    case Hard = "hard";
+    case Easy = 'easy';
+    case Medium = 'medium';
+    case Hard = 'hard';
 }

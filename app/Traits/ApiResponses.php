@@ -4,7 +4,6 @@ namespace App\Traits;
 
 trait ApiResponses
 {
-
     protected function ok($message, $data = [])
     {
         return $this->success($message, $data, 200);
@@ -15,7 +14,7 @@ trait ApiResponses
         return response()->json([
             'message' => $message,
             'data' => $data,
-            'status' => $status
+            'status' => $status,
         ], $status);
     }
 
@@ -24,12 +23,12 @@ trait ApiResponses
         if (is_string($errors)) {
             return response()->json([
                 'message' => $errors,
-                'status' => $status
+                'status' => $status,
             ], $status);
         }
 
         return response()->json([
-            'errors' => $errors
+            'errors' => $errors,
         ], $status);
     }
 
@@ -40,7 +39,7 @@ trait ApiResponses
                 'status' => 401,
                 'message' => $message,
                 'source' => '',
-            ]
+            ],
         ], 401);
     }
 }
