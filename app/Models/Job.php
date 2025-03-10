@@ -25,8 +25,14 @@ class Job extends Model
         'responsibilities',
         'requirements',
         'work_location',
+        'max_applicants',
         'is_available',
+        'available_to',
         'company_id',
+    ];
+    
+    protected $casts = [
+        'available_to' => 'datetime'
     ];
 
     public function company(): BelongsTo

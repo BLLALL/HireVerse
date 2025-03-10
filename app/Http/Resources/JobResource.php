@@ -24,8 +24,8 @@ class JobResource extends JsonResource
                 'experienceLevel' => $this->experience_level,
                 'workLocation' => $this->work_location,
                 'isAvailable' => $this->is_available,
-                'availableTo' => $this->available_to ? Carbon::parse($this->available_to)->toIso8601String() : null,
-                'maxApplicants' => $this->maxApplicants,
+                'availableTo' => $this->available_to->toDateString(),
+                'maxApplicants' => $this->max_applicants,
                 'companyLogo' => $this->company->logo,
                 'salary' => $this->salary,
                 'currency' => $this->currency,
@@ -34,12 +34,10 @@ class JobResource extends JsonResource
                     'requirements' => $this->requirements,
                     'responsibilities' => $this->responsibilities,
                     'workHours' => $this->work_hours,
-                    'skills' => $this->whenLoaded('skills', function() {
-                        return $this->skills->pluck('title');
-                    }),
+                    'skills' => $this->skills,
                 ]),
-                'createdAt' => $this->created_at ? Carbon::parse($this->created_at)->toIso8601String() : null,
-                'updatedAt' => $this->updated_at ? Carbon::parse($this->updated_at)->toIso8601String() : null,
+                'createdAt' => $this->created_at->diffForHumans(),
+                'updatedAt' => $this->updated_at->diffForHumans(),
 
             ],
             'links' => [
@@ -57,7 +55,7 @@ class JobResource extends JsonResource
                         ]),
                     ],
                 ],
-                
+
             ],
 
         ];

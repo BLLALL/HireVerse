@@ -23,16 +23,16 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        VerifyEmail::createUrlUsing(function ($notifiable) {
-            return URL::temporarySignedRoute(
-                'verification.verify',
-                Carbon::now()->addMinutes(Config::get('auth.verification.expire', 60)),
-                [
-                    'type' => strtolower(class_basename($notifiable)),
-                    'id' => $notifiable->getKey(),
-                    'hash' => sha1($notifiable->getEmailForVerification()),
-                ]
-            );
-        });
+        // VerifyEmail::createUrlUsing(function ($notifiable) {
+        //     return URL::temporarySignedRoute(
+        //         'verification.verify',
+        //         Carbon::now()->addMinutes(Config::get('auth.verification.expire', 60)),
+        //         [
+        //             'type' => strtolower(class_basename($notifiable)),
+        //             'id' => $notifiable->getKey(),
+        //             'hash' => sha1($notifiable->getEmailForVerification()),
+        //         ]
+        //     );
+        // });
     }
 }

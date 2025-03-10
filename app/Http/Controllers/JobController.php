@@ -29,7 +29,7 @@ class JobController extends Controller
             WorkingHours::class,
         ]);
 
-        return JobResource::collection($jobs->paginate(10));
+        return JobResource::collection($jobs->latest()->paginate(10));
     }
 
     public function show(Job $job): mixed

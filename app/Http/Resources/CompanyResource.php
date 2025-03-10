@@ -25,7 +25,7 @@ class CompanyResource extends JsonResource
                 $this->mergeWhen(
                     ! $request->routeIs(['companies.index']),
                     [
-                        'businessEmail' => $this->business_email,
+                        'businessEmail' => $this->email,
                         'websiteUrl' => $this->website_url,
                         'ceo' => $this->ceo,
                         'description' => $this->description,

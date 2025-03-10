@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Traits\ApiResponses;
 use App\Traits\TokenHelpers;
-use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -21,7 +20,7 @@ class VerificationController extends Controller
         if (! in_array($type, ['applicant', 'company'])) {
             throw new NotFoundHttpException;
         }
-        $model = 'App\\Models\\'.ucwords($type);
+        $model = 'App\\Models\\' . ucwords($type);
 
         $user = $model::findOrFail($id);
 
@@ -31,13 +30,7 @@ class VerificationController extends Controller
 
         $user->markEmailAsVerified();
 
-        return $this->ok(
-            'Email verified successfully',
-            [
-                $type => $user,
-                'token' => $this->generateToken($user),
-            ]
-        );
+        return redirect(config('app.frontend_url') . 'Login');
     }
 
     public function resend(Request $request)
@@ -46,7 +39,8 @@ class VerificationController extends Controller
         if ($user->hasVerifiedEmail()) {
             return $this->error('Email already verified', 409);
         }
-        event(new Registered($user));
+
+        $user->sendEmailVerificationNotification();
 
         return $this->ok('Email verification link sent');
     }

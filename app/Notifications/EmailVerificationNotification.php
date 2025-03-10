@@ -2,9 +2,11 @@
 
 namespace App\Notifications;
 
+use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use Illuminate\Support\Facades\URL;
 
 class EmailVerificationNotification extends Notification
 {
@@ -33,10 +35,24 @@ class EmailVerificationNotification extends Notification
      */
     public function toMail(object $notifiable): MailMessage
     {
+
+        $verificationUrl = URL::temporarySignedRoute(
+            'verification.verify',
+            Carbon::now()->addMinutes(60),
+            [
+                'type' => strtolower(class_basename($notifiable)),
+                'id' => $notifiable->getKey(),
+                'hash' => sha1($notifiable->getEmailForVerification()),
+            ]
+        );
+
         return (new MailMessage)
-            ->line('The introduction to the notification.')
-            ->action('Notification Action', url('/'))
-            ->line('Thank you for using our application!');
+            ->subject('Verify Your Email Address')
+            ->view('emails.verify', [
+                'verificationUrl' => $verificationUrl,
+                'logo' => config('app.url') . 'images/logo.png',
+                'appName' => config('app.name'),
+            ]);
     }
 
     /**
@@ -46,6 +62,8 @@ class EmailVerificationNotification extends Notification
      */
     public function toArray(object $notifiable): array
     {
-        return [];
+        return [
+            //
+        ];
     }
 }

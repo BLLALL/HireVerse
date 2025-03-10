@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CompleteRegistrationRequest;
 use App\Http\Requests\LoginApplicantRequest;
 use App\Http\Requests\RegisterApplicantRequest;
 use App\Models\Applicant;
 use App\Traits\ApiResponses;
 use App\Traits\TokenHelpers;
-use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
@@ -18,7 +18,7 @@ class AuthController extends Controller
     {
         $applicant = Applicant::create($request->validated());
 
-        event(new Registered($applicant));
+        $applicant->sendEmailVerificationNotification();
 
         $verificationToken = $applicant->createToken('email-verification', ['email-verification'], now()->addHours(3))->plainTextToken;
 
@@ -41,13 +41,22 @@ class AuthController extends Controller
         $token = $applicant->createToken('API token for '.$applicant->email, ['*'], now()->addMonth())->plainTextToken;
 
         return $this->ok('Authenticated', ['applicant' => $applicant, 'token' => $token]);
-
     }
 
     public function logout()
     {
         Auth::user()->currentAccessToken()->delete();
-
         return response()->noContent();
+    }
+
+    public function complete(CompleteRegistrationRequest $request)
+    {
+        $applicant = tap(Auth::user(), function (Applicant $applicant) use ($request) {
+            $skills = array_map(fn ($skill) => ['title' => $skill], $request->skills);
+            $applicant->skills()->createMany($skills);
+            $applicant->update($request->only('job_title'));
+        });
+
+        return $this->ok('Applicant successfully completed registration.', ['applicant' => $applicant]);
     }
 }

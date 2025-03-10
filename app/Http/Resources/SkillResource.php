@@ -2,9 +2,9 @@
 
 namespace App\Http\Resources;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Carbon\Carbon;
 
 class SkillResource extends JsonResource
 {
@@ -39,15 +39,13 @@ class SkillResource extends JsonResource
 
     /**
      * Get the skillable type formatted for JSON:API.
-     *
-     * @return string
      */
     private function getSkillableType(): string
     {
 
         $parts = explode('\\', $this->skillable_type);
         $className = end($parts);
-        
+
         return strtolower($className);
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Notifications\EmailVerificationNotification;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -83,5 +84,10 @@ class Applicant extends Authenticatable implements MustVerifyEmail
     public function getSkillsAttribute()
     {
         return $this->skills()->pluck('title');
+    }
+
+    public function sendEmailVerificationNotification()
+    {
+        $this->notify(new EmailVerificationNotification);
     }
 }

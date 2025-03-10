@@ -19,8 +19,8 @@ class CompanyAuthController extends Controller
     {
 
         $company = Company::create($request->validated());
-        event(new Registered($company));
-
+        $company->sendEmailVerificationNotification();
+        
         return $this->success(
             'Company successfully created, please verify your email',
             ['verificationToken' => $this->generateEmailVerificationToken($company)],
