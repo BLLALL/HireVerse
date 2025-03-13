@@ -34,6 +34,7 @@ class Applicant extends Authenticatable implements MustVerifyEmail
         'job_title',
         'github_url',
         'linkedin_url',
+        'email_verified_at',
     ];
 
     /**
@@ -56,14 +57,10 @@ class Applicant extends Authenticatable implements MustVerifyEmail
         ];
     }
 
-    public function jobs()
+    public function jobs(): BelongsToMany
     {
-        $this->belongsToMany(
-            Job::class,
-            'applications',
-            'job_id',
-            'applicant_id'
-        )->withPivot('cv', 'cv_score', 'cv_accepted');
+        return $this->belongsToMany(Job::class, 'applications', 'applicant_id', 'job_id')
+            ->withPivot('cv', 'cv_score', 'cv_accepted');
     }
 
     public function skills(): MorphMany

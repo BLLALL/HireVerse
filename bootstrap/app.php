@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\ApiGuest;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -17,6 +18,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'abilities' => CheckAbilities::class,
             'ability' => CheckForAnyAbility::class,
+            'api_guest' => ApiGuest::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
