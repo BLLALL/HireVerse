@@ -19,6 +19,7 @@ class Job extends Model
         'type',
         'summary',
         'salary',
+        'currency',
         'work_hours',
         'work_location',
         'experience_level',
@@ -30,9 +31,9 @@ class Job extends Model
         'available_to',
         'company_id',
     ];
-    
+
     protected $casts = [
-        'available_to' => 'datetime'
+        'available_to' => 'datetime',
     ];
 
     public function company(): BelongsTo
@@ -42,7 +43,7 @@ class Job extends Model
 
     public function applicants()
     {
-        $this->belongsToMany(Applicant::class, 'applications', 'applicant_id', 'job_id')
+        return $this->belongsToMany(Applicant::class, 'applications', 'applicant_id', 'job_id')
             ->withPivot('cv', 'cv_score', 'cv_accepted');
     }
 
