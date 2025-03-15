@@ -13,9 +13,14 @@ class search
     public function handle(Builder $query, Closure $next)
     {
         if (request()->has('search')) {
-            $query->where('title', 'like', '%'.request()->search.'%')
-                ->orWhereRelation('company', 'name', 'like', '%'.request()->search.'%')
-                ->orWhereRelation('skills', 'title', 'like', '%'.request()->search.'%');
+            $search_term = strtolower(request()->search);
+            $query->whereRaw('LOWER(title) like ?', ["%{$search_term}%"])
+                ->orWhereHas('company', function ($q) use ($search_term) {
+                    $q->whereRaw('LOWER(name) like ?', ["%{$search_term}%"]);
+                })
+                ->orWhereHas('skills', function ($q) use ($search_term) {
+                    $q->whereRaw('LOWER(title) like ?', ["%{$search_term}%"]);
+                });
         }
 
         return $next($query);

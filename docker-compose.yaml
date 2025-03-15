@@ -33,10 +33,12 @@ services:
       - 5433:5432
     volumes:
       - /db-data:/postgres/data
+      - ./docker/postgres/postgres-hireverse-test.sql:/docker-entrypoint-initdb.d/postgres-hireverse-test.sql
     environment:
       - POSTGRES_DB=${DB_DATABASE}
       - POSTGRES_USER=${DB_USERNAME}
       - POSTGRES_PASSWORD=${DB_PASSWORD}
+      # - POSTGRES_MULTIPLE_DATABASES=hireverse,hireverse_test
     networks:
       - docker-network
 

@@ -14,7 +14,7 @@ class WorkingHours
     public function handle(Builder $query, Closure $next)
     {
         if (request()->has('work_hours') && in_array(request()->work_hours, EnumsWorkingHours::values())) {
-            $query->where('work_hours', request()->working_hours);
+            $query->where('work_hours', request()->work_hours);
         }
 
         return $next($query);

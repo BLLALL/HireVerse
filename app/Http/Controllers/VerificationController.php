@@ -20,7 +20,7 @@ class VerificationController extends Controller
         if (! in_array($type, ['applicant', 'company'])) {
             throw new NotFoundHttpException;
         }
-        $model = 'App\\Models\\' . ucwords($type);
+        $model = 'App\\Models\\'.ucwords($type);
 
         $user = $model::findOrFail($id);
 
@@ -30,7 +30,7 @@ class VerificationController extends Controller
 
         $user->markEmailAsVerified();
 
-        return redirect(config('app.frontend_url') . 'Login');
+        return redirect(config('app.frontend_url').'Login');
     }
 
     public function resend(Request $request)

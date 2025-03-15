@@ -7,7 +7,6 @@ use App\Http\Requests\RegisterCompanyRequest;
 use App\Models\Company;
 use App\Traits\ApiResponses;
 use App\Traits\TokenHelpers;
-use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
@@ -20,7 +19,7 @@ class CompanyAuthController extends Controller
 
         $company = Company::create($request->validated());
         $company->sendEmailVerificationNotification();
-        
+
         return $this->success(
             'Company successfully created, please verify your email',
             ['verificationToken' => $this->generateEmailVerificationToken($company)],
