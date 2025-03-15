@@ -16,7 +16,6 @@ class CompanyAuthController extends Controller
 
     public function register(RegisterCompanyRequest $request)
     {
-
         $company = Company::create($request->validated());
         $company->sendEmailVerificationNotification();
 
@@ -41,7 +40,6 @@ class CompanyAuthController extends Controller
     public function logout()
     {
         Auth::user()->currentAccessToken()->delete();
-
         return response()->noContent();
     }
 }

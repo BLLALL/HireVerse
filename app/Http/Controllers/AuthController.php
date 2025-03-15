@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Http\Requests\CompleteRegistrationRequest;
 use App\Http\Requests\LoginApplicantRequest;
 use App\Http\Requests\RegisterApplicantRequest;
+use App\Http\Resources\ApplicantResource;
 use App\Models\Applicant;
+use App\Models\Skill;
 use App\Traits\ApiResponses;
 use App\Traits\TokenHelpers;
 use Illuminate\Support\Facades\Auth;
@@ -38,7 +40,7 @@ class AuthController extends Controller
             return $this->unauthorized('Invalid credentials!');
         }
 
-        $token = $applicant->createToken('API token for '.$applicant->email, ['*'], now()->addMonth())->plainTextToken;
+        $token = $applicant->createToken('API token for ' . $applicant->email, ['*'], now()->addMonth())->plainTextToken;
 
         return $this->ok('Authenticated', ['applicant' => $applicant, 'token' => $token]);
     }
@@ -53,11 +55,21 @@ class AuthController extends Controller
     public function complete(CompleteRegistrationRequest $request)
     {
         $applicant = tap(Auth::user(), function (Applicant $applicant) use ($request) {
-            $skills = array_map(fn ($skill) => ['title' => $skill], $request->skills);
-            $applicant->skills()->createMany($skills);
+            $uniqueSkills = array_unique($request->skills);
+            $skills = array_map(function ($skill) {
+                return [
+                    'title' => $skill,
+                    'skillable_type' => 'App\\Models\\Applicant',
+                    'skillable_id' => Auth::id(),
+                ];
+            }, $uniqueSkills);
+
+            $applicant->skills()->delete();
+            Skill::insert($skills);
+
             $applicant->update($request->only('job_title'));
         });
 
-        return $this->ok('Applicant successfully completed registration.', ['applicant' => $applicant]);
+        return $this->ok('Applicant successfully completed registration.', ['applicant' => ApplicantResource::make($applicant)]);
     }
 }

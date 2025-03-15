@@ -14,7 +14,7 @@ class JobResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        $response = [
+        return [
             'type' => 'job',
             'id' => $this->id,
             'attributes' => [
@@ -26,15 +26,21 @@ class JobResource extends JsonResource
                 'availableTo' => $this->available_to->toDateString(),
                 'maxApplicants' => $this->max_applicants,
                 'companyLogo' => $this->company->logo,
+                'companyName' => $this->company->name,
                 'salary' => $this->salary,
                 'currency' => $this->currency,
                 'summary' => $this->summary,
-                $this->mergeWhen(! $request->routeIs(['jobs.index']), [
-                    'requirements' => $this->requirements,
-                    'responsibilities' => $this->responsibilities,
-                    'workHours' => $this->work_hours,
-                    'skills' => $this->skills,
-                ]),
+
+                $this->mergeWhen(
+                    ! $request->routeIs(['jobs.index']),
+                    [
+                        'requirements' => $this->requirements,
+                        'responsibilities' => $this->responsibilities,
+                        'workHours' => $this->work_hours,
+                        'skills' => $this->skills,
+                    ]
+                ),
+                
                 'createdAt' => $this->created_at->diffForHumans(),
                 'updatedAt' => $this->updated_at->diffForHumans(),
 
@@ -56,15 +62,6 @@ class JobResource extends JsonResource
                 ],
 
             ],
-
         ];
-
-        if ($this->relationLoaded('company')) {
-            $response['includes'] = [
-                (new CompanyResource($this->company))->toArray($request),
-            ];
-        }
-
-        return $response;
     }
 }

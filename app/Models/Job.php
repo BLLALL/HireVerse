@@ -6,6 +6,7 @@ use App\Traits\Filtrable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -41,9 +42,9 @@ class Job extends Model
         return $this->belongsTo(Company::class);
     }
 
-    public function applicants()
+    public function applicants(): BelongsToMany
     {
-        return $this->belongsToMany(Applicant::class, 'applications', 'applicant_id', 'job_id')
+        return $this->belongsToMany(Applicant::class, 'applications', 'job_id', 'applicant_id')
             ->withPivot('cv', 'cv_score', 'cv_accepted');
     }
 

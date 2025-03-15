@@ -2,12 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\CompleteOAuthRequest;
 use App\Models\Applicant;
 use App\Traits\ApiResponses;
 use App\Traits\TokenHelpers;
-use Illuminate\Auth\Events\Registered;
 use Laravel\Socialite\Facades\Socialite;
+use Laravel\Socialite\Two\User;
 
 class OAuthController extends Controller
 {
@@ -22,28 +21,20 @@ class OAuthController extends Controller
     {
         $oAuthUser = Socialite::driver($provider)->stateless()->user();
 
-        // determine wheather to sign up or sign in
-        if (! $applicant = Applicant::firstWhere(['provider' => $provider, 'provider_id' => $oAuthUser->id])) {
+        if (! $applicant = Applicant::where(['provider' => $provider, 'provider_id' => $oAuthUser->id])->orWhere('email', $oAuthUser->email)->first()) {
             return $this->createOAuthUser($oAuthUser, $provider);
         }
 
-        // sign in
-        return $this->ok(
-            "Signed in with {$provider} successfully!",
-            [
-                'applicant' => $applicant,
-                'token' => $this->generateToken($applicant),
-            ]
-        );
+        $token = $this->generateToken($applicant);
+        return redirect()->away(config('app.frontend_url') . "/oauth/callback?token={$token}&status=200");
     }
 
-    public function createOAuthUser($oAuthUser, $provider)
+    public function createOAuthUser(User $oAuthUser, string $provider)
     {
-        $fullName = explode(' ', $oAuthUser->name);
+        $fullName = explode(' ', $oAuthUser->name ?? $oAuthUser->nickname);
 
         $firstName = $fullName[0];
-        $lastName = end($fullName) == $firstName ? null : end($fullName);
-
+        $lastName = count($fullName) < 2 ? null : end($fullName);
         $email = $oAuthUser->email;
 
         $attributes = [
@@ -52,44 +43,12 @@ class OAuthController extends Controller
             'first_name' => $firstName,
             'last_name' => $lastName,
             'email' => $email,
+            'email_verified_at' => now(),
         ];
 
-        // if there is missing data such as first_name or last_name
-        if (in_array(null, $attributes)) {
-            return $this->ok('Please complete the missing data!', $attributes);
-        }
-
-        // if the user signed up previously with a provider and tries to sign in with another provider with the same email
-        if (Applicant::whereEmail($email)->exists()) {
-            return $this->error('Email has already been taken!', 409);
-        }
-
         $applicant = Applicant::create($attributes);
+        $token = $this->generateToken($applicant);
 
-        // mark email as verfied because the email is taken from google or github, so it is already verified
-        $applicant->markEmailAsVerified();
-
-        return $this->success(
-            "Signed up with {$provider} successfully!",
-            [
-                'applicant' => $applicant,
-                'token' => $this->generateToken($applicant),
-            ],
-            201
-        );
-    }
-
-    public function complete(CompleteOAuthRequest $request)
-    {
-        $applicant = Applicant::create($request->validated());
-
-        // here we need to verify email because the user might change it in this request
-        event(new Registered($applicant));
-
-        return $this->success(
-            "Signed up with {$request->provider} successfully, please verify your email!",
-            ['verificationToken' => $this->generateEmailVerificationToken($applicant)],
-            201
-        );
+        return redirect()->away(config('app.frontend_url') . "/oauth/callback?token={$token}&status=201");
     }
 }

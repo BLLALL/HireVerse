@@ -15,8 +15,6 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->morphs('skillable');
-            $table->timestamps();
-            $table->softDeletes();
         });
     }
 
