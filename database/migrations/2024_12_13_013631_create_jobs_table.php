@@ -30,6 +30,7 @@ return new class extends Migration
             $table->boolean('is_available')->default(false);
             $table->dateTime('available_to')->nullable();
             $table->smallInteger('max_applicants')->nullable();
+            $table->smallInteger('required_no_of_hires')->nullable();
             $table->foreignId('company_id')->nullable()->constrained('companies');
             $table->timestamps();
             $table->softDeletes();

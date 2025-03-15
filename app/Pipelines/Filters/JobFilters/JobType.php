@@ -13,8 +13,14 @@ class JobType
 
     public function handle(Builder $query, Closure $next)
     {
-        if (request()->has('type') && in_array(request()->type, EnumsJobType::values())) {
-            $query->where('type', request()->type);
+        if (request()->has('type')) {
+            $types = explode(',', request()->get('type'));
+            
+            $validTypes = array_filter($types, fn($type) => in_array($type, EnumsJobType::values(), true));
+            
+            if (!empty($validTypes)) {
+            $query->whereIn('type', $validTypes);
+            }
         }
 
         return $next($query);

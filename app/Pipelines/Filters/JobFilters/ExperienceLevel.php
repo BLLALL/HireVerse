@@ -13,10 +13,14 @@ class ExperienceLevel
 
     public function handle(Builder $query, Closure $next)
     {
-        if (request()->has('experience_level') &&
-            in_array(request()->experience_level, EnumsExperienceLevel::values())) {
-            $query->where('experience_level', request()->experience_level);
+        if (request()->has('experience_level')) {
+            $experienceLevels = explode(',', request()->get('experience_level'));
 
+            $validLevels = array_intersect($experienceLevels, EnumsExperienceLevel::values());
+            
+            if (!empty($validLevels)) {
+            $query->whereIn('experience_level', $validLevels);
+            }
         }
 
         return $next($query);
