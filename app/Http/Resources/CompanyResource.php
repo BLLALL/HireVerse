@@ -42,7 +42,7 @@ class CompanyResource extends JsonResource
                 'self' => route('companies.show', ['company' => $this->id]),
             ],
 
-            'includes' => [JobResource::collection($this->whenLoaded('jobs'))],
+            // 'includes' => [JobResource::collection($this->whenLoaded('jobs'))],
         ];
     }
 }
