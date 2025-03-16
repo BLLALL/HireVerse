@@ -1,6 +1,13 @@
 <?php
 
-use App\Http\Controllers\{ApplicantController, CompanyController, JobController, AuthController, CompanyAuthController, CurrentUserController, OAuthController, VerificationController};
+use App\Http\Controllers\ApplicantController;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CompanyAuthController;
+use App\Http\Controllers\CompanyController;
+use App\Http\Controllers\CurrentUserController;
+use App\Http\Controllers\JobController;
+use App\Http\Controllers\OAuthController;
+use App\Http\Controllers\VerificationController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('api_guest')->group(function () {
@@ -22,7 +29,6 @@ Route::middleware('api_guest')->group(function () {
     });
 });
 
-
 Route::controller(VerificationController::class)->group(function () {
     Route::get('{type}/email/verify/{id}', 'verify')->name('verification.verify');
     Route::post('email/resend', 'resend')->middleware(['auth:sanctum', 'throttle:6,1', 'abilities:email-verification'])->name('verification.resend');
@@ -39,4 +45,4 @@ Route::middleware(['auth:sanctum', 'ability:*'])->group(function () {
     Route::get('auth/user', CurrentUserController::class);
 });
 
-Route::get('test', fn() => 'HireVerse - HierServe');
+Route::get('test', fn () => 'HireVerse - HierServe');

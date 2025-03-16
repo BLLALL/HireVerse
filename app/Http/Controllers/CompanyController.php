@@ -9,7 +9,7 @@ class CompanyController extends Controller
 {
     public function index(): mixed
     {
-        return CompanyResource::collection(Company::latest()->paginate(10));
+        return CompanyResource::collection(Company::latest());
     }
 
     public function show(Company $company): mixed

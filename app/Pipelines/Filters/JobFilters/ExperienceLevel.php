@@ -17,9 +17,9 @@ class ExperienceLevel
             $experienceLevels = explode(',', request()->get('experience_level'));
 
             $validLevels = array_intersect($experienceLevels, EnumsExperienceLevel::values());
-            
-            if (!empty($validLevels)) {
-            $query->whereIn('experience_level', $validLevels);
+
+            if (! empty($validLevels)) {
+                $query->whereIn('experience_level', $validLevels);
             }
         }
 

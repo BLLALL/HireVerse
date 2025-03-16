@@ -40,6 +40,7 @@ class CompanyAuthController extends Controller
     public function logout()
     {
         Auth::user()->currentAccessToken()->delete();
+
         return response()->noContent();
     }
 }

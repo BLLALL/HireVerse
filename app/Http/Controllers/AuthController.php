@@ -40,7 +40,7 @@ class AuthController extends Controller
             return $this->unauthorized('Invalid credentials!');
         }
 
-        $token = $applicant->createToken('API token for ' . $applicant->email, ['*'], now()->addMonth())->plainTextToken;
+        $token = $applicant->createToken('API token for '.$applicant->email, ['*'], now()->addMonth())->plainTextToken;
 
         return $this->ok('Authenticated', ['applicant' => $applicant, 'token' => $token]);
     }

@@ -26,7 +26,8 @@ class OAuthController extends Controller
         }
 
         $token = $this->generateToken($applicant);
-        return redirect()->away(config('app.frontend_url') . "/oauth/callback?token={$token}&status=200");
+
+        return redirect()->away(config('app.frontend_url')."/oauth/callback?token={$token}&status=200");
     }
 
     public function createOAuthUser(User $oAuthUser, string $provider)
@@ -49,6 +50,6 @@ class OAuthController extends Controller
         $applicant = Applicant::create($attributes);
         $token = $this->generateToken($applicant);
 
-        return redirect()->away(config('app.frontend_url') . "/oauth/callback?token={$token}&status=201");
+        return redirect()->away(config('app.frontend_url')."/oauth/callback?token={$token}&status=201");
     }
 }

@@ -8,7 +8,7 @@ class CurrentUserController extends Controller
     {
         $type = class_basename($user = auth()->user());
 
-        $class = "App\\Http\\Resources\\" . $type . "Resource";
+        $class = 'App\\Http\\Resources\\'.$type.'Resource';
         $resource = $class::make($user);
 
         return response()->json([

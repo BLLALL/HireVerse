@@ -15,11 +15,11 @@ class JobType
     {
         if (request()->has('type')) {
             $types = explode(',', request()->get('type'));
-            
-            $validTypes = array_filter($types, fn($type) => in_array($type, EnumsJobType::values(), true));
-            
-            if (!empty($validTypes)) {
-            $query->whereIn('type', $validTypes);
+
+            $validTypes = array_intersect($types, EnumsJobType::values());
+
+            if (! empty($validTypes)) {
+                $query->whereIn('type', $validTypes);
             }
         }
 

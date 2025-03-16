@@ -40,7 +40,7 @@ class JobResource extends JsonResource
                         'skills' => $this->skills,
                     ]
                 ),
-                
+
                 'createdAt' => $this->created_at->diffForHumans(),
                 'updatedAt' => $this->updated_at->diffForHumans(),
 

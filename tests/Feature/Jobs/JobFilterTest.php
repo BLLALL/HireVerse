@@ -3,8 +3,10 @@
 declare(strict_types=1);
 
 namespace Tests\Feature\Jobs;
+
 use App\Models\Job;
 use App\Models\Skill;
+
 use function Pest\Laravel\getJson;
 
 it('filters jobs by work type', function () {
@@ -24,6 +26,25 @@ it('filters jobs by work type', function () {
     ]);
 });
 
+it('filters jobs by experience level', function () {
+
+    Job::factory()->create(['experience_level' => 'junior']);
+    Job::factory()->create(['experience_level' => 'senior']);
+    Job::factory()->create(['experience_level' => 'senior']);
+
+    $response = getJson('/api/jobs?experience_level=junior');
+
+    $response->assertJsonCount(1, 'data')->assertJsonFragment([
+        'experienceLevel' => 'junior',
+    ]);
+
+    $response = getJson('/api/jobs?experience_level=senior');
+
+    $response->assertJsonCount(2, 'data')->assertJsonFragment([
+        'experienceLevel' => 'senior',
+    ]);
+});
+
 it('filters jobs by work location', function () {
     request()->merge(['location' => 'remote']);
 
@@ -35,6 +56,26 @@ it('filters jobs by work location', function () {
     $filteredJobs->assertJsonCount(1, 'data')->assertJsonFragment([
         'workLocation' => 'remote',
     ]);
+});
+
+it('it applies multiple filtrable filters', function() {
+    Job::factory()->create([
+        'type' => 'full_time',
+        'experience_level' => 'senior',
+        'work_location' => 'remote',
+    ]);
+
+    Job::factory()->create([
+        'type' => 'part_time',
+        'experience_level' => 'junior',
+        'work_location' => 'onsite',
+    ]);
+
+    
+
+    $response = getJson('/api/jobs?type=full_time,part_time&experience_level=senior&location=remote');
+
+
 });
 
 it('filters jobs by work schedule type', function () {
