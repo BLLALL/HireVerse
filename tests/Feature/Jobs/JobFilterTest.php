@@ -6,6 +6,7 @@ namespace Tests\Feature\Jobs;
 
 use App\Models\Job;
 use App\Models\Skill;
+use Database\Seeders\JobSeeder;
 
 use function Pest\Laravel\getJson;
 
@@ -58,23 +59,20 @@ it('filters jobs by work location', function () {
     ]);
 });
 
-it('it applies multiple filtrable filters', function() {
-    Job::factory()->create([
-        'type' => 'full_time',
-        'experience_level' => 'senior',
-        'work_location' => 'remote',
+it('it applies multiple filterable filters', function () {
+    $this->seed(JobSeeder::class);
+
+    $response = getJson('/api/jobs?'.http_build_query([
+        'type' => 'full_time,part_time',
+        'experience_level' => 'senior,mid-level',
+        'location' => 'remote,hybrid',
+    ]));
+
+    $response->assertJsonMissing([
+        'type' => 'freelance',
+        'experienceLevel' => 'junior',
+        'workLocation' => 'onsite',
     ]);
-
-    Job::factory()->create([
-        'type' => 'part_time',
-        'experience_level' => 'junior',
-        'work_location' => 'onsite',
-    ]);
-
-    
-
-    $response = getJson('/api/jobs?type=full_time,part_time&experience_level=senior&location=remote');
-
 
 });
 

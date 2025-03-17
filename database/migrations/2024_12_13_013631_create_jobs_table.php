@@ -27,7 +27,7 @@ return new class extends Migration
             $table->enum('work_location', WorkLocation::values())->default('onsite');
             $table->text('requirements');
             $table->text('responsibilities');
-            $table->boolean('is_available')->default(false);
+            $table->boolean('is_available')->default(true);
             $table->dateTime('available_to')->nullable();
             $table->smallInteger('max_applicants')->nullable();
             $table->smallInteger('required_no_of_hires')->nullable();
@@ -36,7 +36,6 @@ return new class extends Migration
             $table->softDeletes();
         });
     }
-
     /**
      * Reverse the migrations.
      */

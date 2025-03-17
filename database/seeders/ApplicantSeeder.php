@@ -12,7 +12,7 @@ class ApplicantSeeder extends Seeder
      */
     public function run(): void
     {
-        Applicant::factory()->create([
+        Applicant::firstOrNew([
             'first_name' => 'Salah',
             'last_name' => 'Eddine',
             'email' => 'salah@test.com',
