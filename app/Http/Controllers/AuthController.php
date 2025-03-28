@@ -51,25 +51,13 @@ class AuthController extends Controller
     public function logout()
     {
         Auth::user()->currentAccessToken()->delete();
-
         return response()->noContent();
     }
 
     public function complete(CompleteRegistrationRequest $request)
     {
         $applicant = tap(Auth::user(), function (Applicant $applicant) use ($request) {
-            $uniqueSkills = array_unique($request->skills);
-            $skills = array_map(function ($skill) {
-                return [
-                    'title' => $skill,
-                    'skillable_type' => Applicant::class,
-                    'skillable_id' => Auth::id(),
-                ];
-            }, $uniqueSkills);
-
-            $applicant->skills()->delete();
-            Skill::insert($skills);
-
+            $applicant->skills = $request->skills;
             $applicant->update($request->only('job_title'));
         });
 

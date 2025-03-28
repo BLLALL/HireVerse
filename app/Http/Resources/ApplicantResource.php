@@ -20,7 +20,7 @@ class ApplicantResource extends JsonResource
             'attributes' => [
                 'firstName' => $this->first_name,
                 'lastName' => $this->last_name,
-                'imageUrl' => $this->profile_image,
+                'avatarUrl' => $this->avatar,
                 'email' => $this->email,
                 'jobTitle' => $this->job_title,
                 'cvUrl' => $this->cv,
@@ -37,8 +37,8 @@ class ApplicantResource extends JsonResource
                     ]
                 ),
 
-                'createdAt' => $this->created_at->diffForHumans(),
-                'updatedAt' => $this->updated_at->diffForHumans(),
+                'registered' => $this->created_at->diffForHumans(),
+                'updated' => $this->updated_at->diffForHumans(),
             ],
             'links' => [
                 'self' => route('applicants.show', ['applicant' => $this->id]),

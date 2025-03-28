@@ -27,13 +27,16 @@ class Applicant extends Authenticatable implements MustVerifyEmail
         'last_name',
         'email',
         'password',
-        'provider',
-        'provider_id',
+        'avatar',
         'birthdate',
         'cv',
         'job_title',
         'github_url',
         'linkedin_url',
+        'college',
+        'department',
+        'provider',
+        'provider_id',
         'email_verified_at',
     ];
 
@@ -79,6 +82,23 @@ class Applicant extends Authenticatable implements MustVerifyEmail
             'employment_status',
             'is_current_employee'
         );
+    }
+
+    public function setSkillsAttribute($skills)
+    {
+        if (empty($skills)) return;
+
+        $uniqueSkills = array_unique($skills);
+        $skills = array_map(function ($skill) {
+            return [
+                'title' => $skill,
+                'skillable_type' => self::class,
+                'skillable_id' => $this->id,
+            ];
+        }, $uniqueSkills);
+
+        $this->skills()->delete();
+        Skill::insert($skills);
     }
 
     public function getSkillsAttribute()

@@ -8,7 +8,9 @@ use Illuminate\Auth\AuthenticationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Exception\RouteNotFoundException;
@@ -34,7 +36,10 @@ class ExceptionHandler
                 $this->error('Unauthorized', 403),
             
             $exception instanceof ModelNotFoundException => 
-                $this->error('Resource not found', 404),
+            $this->error('Resource not found', 404),
+            
+            $exception instanceof HttpException => 
+                $this->error($exception->getMessage(), 403),
             
             $exception instanceof NotFoundHttpException,
             $exception instanceof RouteNotFoundException => 
@@ -59,7 +64,7 @@ class ExceptionHandler
 
     private function handleQueryException(QueryException $exception): mixed
     {
-        \Log::error($exception->getMessage());
+        Log::error($exception->getMessage());
         return $this->error('Database error occurred', 500);
     }
 }
