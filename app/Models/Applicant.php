@@ -60,7 +60,10 @@ class Applicant extends Authenticatable implements MustVerifyEmail
     public function jobs(): BelongsToMany
     {
         return $this->belongsToMany(Job::class, 'applications', 'applicant_id', 'job_id')
-            ->withPivot('cv', 'cv_score', 'cv_accepted');
+            ->orderByPivot('created_at', 'desc')
+            ->withPivot('id', 'status', 'cv', 'cv_score')
+            ->withTimestamps()
+            ->as('application');
     }
 
     public function skills(): MorphMany

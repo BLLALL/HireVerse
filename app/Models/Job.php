@@ -44,12 +44,11 @@ class Job extends Model
 
     public function applicants(): BelongsToMany
     {
-        return $this->belongsToMany(
-            Applicant::class,
-            'applications',
-            'job_id',
-            'applicant_id'
-        )->withPivot('cv', 'cv_score', 'cv_accepted');
+        return $this->belongsToMany(Applicant::class, 'applications', 'job_id', 'applicant_id')
+            ->orderByPivot('created_at', 'desc')
+            ->withPivot('status', 'cv', 'cv_score')
+            ->withTimestamps()
+            ->as('application');
     }
 
     public function skills(): MorphMany

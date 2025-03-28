@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Applicant;
+use Database\Factories\ApplicationFactory;
 use Illuminate\Database\Seeder;
 
 class ApplicantSeeder extends Seeder
@@ -12,12 +13,13 @@ class ApplicantSeeder extends Seeder
      */
     public function run(): void
     {
-        Applicant::firstOrNew([
+        Applicant::factory()->create([
             'first_name' => 'Salah',
             'last_name' => 'Eddine',
             'email' => 'salah@test.com',
-            'password' => bcrypt('password'),
+            'password' => 'password',
         ]);
+
         Applicant::factory(10)->create();
     }
 }

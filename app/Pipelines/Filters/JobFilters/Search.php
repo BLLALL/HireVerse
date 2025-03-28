@@ -6,7 +6,7 @@ use App\Traits\Filtrable;
 use Closure;
 use Illuminate\Database\Eloquent\Builder;
 
-class search
+class Search
 {
     use Filtrable;
 

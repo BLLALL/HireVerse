@@ -68,37 +68,8 @@ class JobController extends Controller
 
     private function attachSkills(Job $job, array $skills): void
     {
-        collect($skills)->each(fn ($skillTitle) => $job->skills()->create(['title' => $skillTitle])
+        collect($skills)->each(
+            fn($skillTitle) => $job->skills()->create(['title' => $skillTitle])
         );
     }
-
-    // public function apply(StoreJobApplicationRequest $request): mixed
-    // {
-    //     $attributes = $request->validated();
-
-    //     $attributes["applicant_id"] = auth()->id();
-
-    //     $exists = Application::where([
-    //         ["job_id", $attributes["job_id"]],
-    //         ["applicant_id", $attributes["applicant_id"]],
-    //     ])->exists();
-
-    //     if ($exists) {
-    //         return $this->error(
-    //             "You have already applied to this job before!",
-    //             422
-    //         );
-    //     }
-
-    //     $cv = $request->file("cv")->store("applications");
-    //     $attributes["cv"] = $cv;
-
-    //     $application = Application::create($attributes);
-
-    //     return $this->success(
-    //         "You have applied to this job successfully!",
-    //         $application,
-    //         201
-    //     );
-    // }
 }

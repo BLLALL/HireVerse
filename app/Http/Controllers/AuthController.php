@@ -26,7 +26,10 @@ class AuthController extends Controller
 
         return $this->success(
             'Applicant successfully created, please verify your email',
-            ['verificationToken' => $verificationToken],
+            [
+                'applicant' => ApplicantResource::make($applicant),
+                'verificationToken' => $verificationToken
+            ],
             201
         );
     }
@@ -59,7 +62,7 @@ class AuthController extends Controller
             $skills = array_map(function ($skill) {
                 return [
                     'title' => $skill,
-                    'skillable_type' => 'App\\Models\\Applicant',
+                    'skillable_type' => Applicant::class,
                     'skillable_id' => Auth::id(),
                 ];
             }, $uniqueSkills);

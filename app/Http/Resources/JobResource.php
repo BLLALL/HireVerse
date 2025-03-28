@@ -32,7 +32,7 @@ class JobResource extends JsonResource
                 'summary' => $this->summary,
 
                 $this->mergeWhen(
-                    ! $request->routeIs(['jobs.index']),
+                    $request->routeIs(['jobs.show']),
                     [
                         'requirements' => $this->requirements,
                         'responsibilities' => $this->responsibilities,
@@ -41,8 +41,8 @@ class JobResource extends JsonResource
                     ]
                 ),
 
-                'createdAt' => $this->created_at->diffForHumans(),
-                'updatedAt' => $this->updated_at->diffForHumans(),
+                'created' => $this->created_at->diffForHumans(),
+                'updated' => $this->updated_at->diffForHumans(),
 
             ],
             'links' => [

@@ -14,6 +14,6 @@ class JobSeeder extends Seeder
     public function run(): void
     {
         $company = Company::limit(3);
-        Job::factory(10)->recycle($company)->create();
+        Job::factory(20)->recycle($company)->create();
     }
 }

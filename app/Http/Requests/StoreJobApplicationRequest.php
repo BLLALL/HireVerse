@@ -23,7 +23,6 @@ class StoreJobApplicationRequest extends FormRequest
     {
 
         return [
-            'job_id' => 'required|integer|exists:jobs,id',
             'cv' => 'required|file|mimes:pdf|max:10240',
         ];
     }

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ApplicantController;
+use App\Http\Controllers\ApplicantJobsController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CompanyAuthController;
 use App\Http\Controllers\CompanyController;
@@ -8,6 +9,7 @@ use App\Http\Controllers\CurrentUserController;
 use App\Http\Controllers\JobController;
 use App\Http\Controllers\OAuthController;
 use App\Http\Controllers\VerificationController;
+use App\Models\Applicant;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('api_guest')->group(function () {
@@ -57,12 +59,21 @@ Route::apiResource('applicants', ApplicantController::class)->only([
     'show',
 ]);
 
-Route::middleware(['auth:sanctum', 'ability:*'])->group(function () {
+Route::middleware(['auth:sanctum', 'ability:*', 'verified'])->group(function () {
     Route::post('logout', [AuthController::class, 'logout']);
     Route::post('company/logout', [CompanyAuthController::class, 'logout']);
     Route::post('jobs', [JobController::class, 'store']);
-    Route::post('jobs/apply', [JobController::class, 'apply']);
     Route::get('auth/user', CurrentUserController::class);
+    Route::post('applicant/jobs/{job}/applications', [ApplicantJobsController::class, 'store']);
+    Route::get('applicant/jobs', [ApplicantJobsController::class, 'index']);
 });
 
-Route::get('test', fn () => 'HireVerse - HierServe');
+// Route::get('test', fn() => 'HireVerse - HierServe');
+Route::get('test', function () {
+
+    $a = Applicant::find(1);
+
+    return $a->jobs()->get();
+
+    return 'HireVerse - HierServe';
+});
