@@ -2,10 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreJobApplicationRequest;
 use App\Http\Requests\StoreJobRequest;
 use App\Http\Resources\JobResource;
-use App\Models\Application;
 use App\Models\Job;
 use App\Pipelines\Filters\JobFilters\ExperienceLevel;
 use App\Pipelines\Filters\JobFilters\JobType;
@@ -14,7 +12,6 @@ use App\Pipelines\Filters\JobFilters\RangeSalary;
 use App\Pipelines\Filters\JobFilters\Search;
 use App\Pipelines\Filters\JobFilters\WorkingHours;
 use App\Traits\ApiResponses;
-use Illuminate\Support\Facades\Auth;
 
 class JobController extends Controller
 {
@@ -69,7 +66,7 @@ class JobController extends Controller
     private function attachSkills(Job $job, array $skills): void
     {
         collect($skills)->each(
-            fn($skillTitle) => $job->skills()->create(['title' => $skillTitle])
+            fn ($skillTitle) => $job->skills()->create(['title' => $skillTitle])
         );
     }
 }

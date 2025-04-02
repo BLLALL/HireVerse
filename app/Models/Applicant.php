@@ -86,7 +86,9 @@ class Applicant extends Authenticatable implements MustVerifyEmail
 
     public function setSkillsAttribute($skills)
     {
-        if (empty($skills)) return;
+        if (empty($skills)) {
+            return;
+        }
 
         $uniqueSkills = array_unique($skills);
         $skills = array_map(function ($skill) {

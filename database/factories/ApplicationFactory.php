@@ -3,8 +3,6 @@
 namespace Database\Factories;
 
 use App\Enums\ApplicationStatus;
-use App\Models\Application;
-use App\Models\Job;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -22,8 +20,8 @@ class ApplicationFactory extends Factory
         return [
             'cv' => fake()->filePath(),
             'status' => $status = fake()->randomElement(ApplicationStatus::values()),
-            'cv_score' => $status != ApplicationStatus::Pending ? fake()->numberBetween(10, 100): null,
-            'inteview_date' => $status == ApplicationStatus::Eligible ? fake()->date('+6 months'): null,
+            'cv_score' => $status != ApplicationStatus::Pending ? fake()->numberBetween(10, 100) : null,
+            'inteview_date' => $status == ApplicationStatus::Eligible ? fake()->date('+6 months') : null,
         ];
     }
 }

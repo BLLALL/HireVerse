@@ -22,14 +22,14 @@ class ApplicantProfileController extends Controller
             if ($applicant->cv) {
                 Storage::delete($applicant->cv);
             }
-            $attributes["cv"] = $request->file("cv")->store("applicants/cvs");
+            $attributes['cv'] = $request->file('cv')->store('applicants/cvs');
         }
 
         if ($request->hasFile('avatar')) {
             if ($applicant->avatar) {
                 Storage::delete($applicant->avatar);
             }
-            $attributes["avatar"] = $request->file("avatar")->store("applicants/avatars");
+            $attributes['avatar'] = $request->file('avatar')->store('applicants/avatars');
         }
 
         $applicant = tap($applicant, function (Applicant $applicant) use ($attributes) {
@@ -40,12 +40,13 @@ class ApplicantProfileController extends Controller
         return $this->ok('Profile updated.', ['applicant' => ApplicantResource::make($applicant)]);
     }
 
-    public function changePassword(UpdateApplicantPasswordRequest $request) 
+    public function changePassword(UpdateApplicantPasswordRequest $request)
     {
         $applicant = $request->user();
         $applicant->password = $request->password;
         $applicant->save();
         $applicant->currentAccessToken()->delete();
+
         return $this->ok('Password changed, please login again!');
     }
 }

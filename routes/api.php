@@ -7,10 +7,8 @@ use App\Http\Controllers\JobController;
 use App\Http\Controllers\VerificationController;
 use Illuminate\Support\Facades\Route;
 
-
-require_once __DIR__ . '/api_applicant.php';
-require_once __DIR__ . '/api_company.php';
-
+require_once __DIR__.'/api_applicant.php';
+require_once __DIR__.'/api_company.php';
 
 Route::controller(VerificationController::class)->group(function () {
     Route::get('{type}/email/verify/{id}', 'verify')->name('verification.verify');

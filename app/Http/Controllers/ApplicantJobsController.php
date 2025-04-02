@@ -44,17 +44,17 @@ class ApplicantJobsController extends Controller
         $attributes = $request->validated();
 
         $exists = Application::where([
-            ["job_id", $attributes["job_id"] = $job->id],
-            ["applicant_id", $attributes["applicant_id"] = Auth::id()],
+            ['job_id', $attributes['job_id'] = $job->id],
+            ['applicant_id', $attributes['applicant_id'] = Auth::id()],
         ])->exists();
 
         if ($exists) {
-            return $this->error("You have already applied to this job before!", 422);
+            return $this->error('You have already applied to this job before!', 422);
         }
 
-        $attributes["cv"] = $request->file("cv")->store("applications");
+        $attributes['cv'] = $request->file('cv')->store('applications');
         $application = Application::create($attributes);
 
-        return $this->success("You have applied to this job successfully!", $application, 201);
+        return $this->success('You have applied to this job successfully!', $application, 201);
     }
 }

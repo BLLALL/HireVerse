@@ -5,7 +5,6 @@ namespace Database\Seeders;
 use App\Models\Applicant;
 use App\Models\Application;
 use App\Models\Job;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class ApplicationSeeder extends Seeder

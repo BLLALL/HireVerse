@@ -13,6 +13,7 @@ services:
       - docker-network
     depends_on:
       - db
+      - redis
   nginx:
     image: nginx:stable-alpine
     ports:
@@ -26,6 +27,14 @@ services:
     depends_on:
       - laravel-app
 
+  redis:
+    image: redis:alpine
+    container_name: redis-container
+    restart: always
+    ports:
+      - 6379:6379
+    networks:
+      - docker-network
   db:
     image: postgres
     container_name: postgres-container

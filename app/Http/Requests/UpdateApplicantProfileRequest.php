@@ -3,7 +3,6 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
 class UpdateApplicantProfileRequest extends FormRequest
 {
@@ -26,9 +25,10 @@ class UpdateApplicantProfileRequest extends FormRequest
             'college' => 'nullable|string|max:80',
             'department' => 'nullable|string|max:80',
             'avatar' => 'nullable|file|mimes:png,jpg,jpeg|max:10240',
-            'birthdate' => ['nullable', 'date', 'before:' . today()->subYears(15)],
+            'birthdate' => ['nullable', 'date', 'before:'.today()->subYears(15)],
         ];
     }
+
     public function messages()
     {
         return [

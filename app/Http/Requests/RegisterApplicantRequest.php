@@ -26,6 +26,17 @@ class RegisterApplicantRequest extends FormRequest
             'last_name' => ['required', 'string', 'max:50'],
             'email' => ['required', 'email', 'unique:applicants,email', 'max:80'],
             'password' => ['required', 'string', 'min:8'],
+            'job_title' => 'required|string|max:100',
+            'skills' => 'required|array|min:1|max:50',
+            'skills.*' => 'string|max:50',
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'skills.*.string' => 'Skill item must be a string.',
+            'skills.*.max' => 'Skill item must not be greater than 50 characters.',
         ];
     }
 }

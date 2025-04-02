@@ -76,41 +76,41 @@ it('creates a job successfully', function () {
     $response = $this->postJson('api/jobs', $this->validJob, [
         'Authorization' => 'Bearer '.$this->token,
         'Accept' => 'application/json',
-    ]); 
+    ]);
 
     $response
         ->assertCreated()
         ->assertJsonFragment(collect($this->validJob)
-        ->except('available_to', 'experience_level', 'work_location',
-             'work_hours', 'max_applicants', 'is_available')->toArray())
+            ->except('available_to', 'experience_level', 'work_location',
+                'work_hours', 'max_applicants', 'is_available')->toArray())
         ->assertJsonStructure([
-                'data' => [
-                    'type',
-                    'id',
-                    'attributes' => [
-                        'title',
-                        'type',
-                        'experienceLevel',
-                        'summary',
-                        'salary',
-                        'currency',
-                        'workHours',
-                        'workLocation',
-                        'requirements',
-                        'responsibilities',
-                        'isAvailable',
-                        'availableTo',
-                        'maxApplicants',
-                        'skills',
-                        'createdAt',
-                    ],
-                    'relationships' => [
-                        'company' => [
-                            'data' => ['type', 'id'],
-                        ],
-                    ],
+            'data' => [
+                'type',
+                'id',
+                'attributes' => [
+                   'title',
+                   'type',
+                   'experienceLevel',
+                   'summary',
+                   'salary',
+                   'currency',
+                   'workHours',
+                   'workLocation',
+                   'requirements',
+                   'responsibilities',
+                   'isAvailable',
+                   'availableTo',
+                   'maxApplicants',
+                   'skills',
+                   'createdAt',
                 ],
-            ]);
+                'relationships' => [
+                   'company' => [
+                       'data' => ['type', 'id'],
+                   ],
+                ],
+            ],
+        ]);
 
     $this->assertDatabaseHas('jobs', [
         'title' => $this->validJob['title'],

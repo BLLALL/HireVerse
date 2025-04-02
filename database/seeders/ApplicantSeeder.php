@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use App\Models\Applicant;
-use Database\Factories\ApplicationFactory;
 use Illuminate\Database\Seeder;
 
 class ApplicantSeeder extends Seeder
