@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\CompleteRegistrationRequest;
 use App\Http\Requests\LoginApplicantRequest;
 use App\Http\Requests\RegisterApplicantRequest;
 use App\Http\Resources\ApplicantResource;
@@ -55,13 +54,13 @@ class AuthController extends Controller
         }
 
         $token = $applicant->createToken(
-            'API token for '.$applicant->email,
+            'API token for ' . $applicant->email,
             ['*'],
             now()->addMonth()
         )->plainTextToken;
 
         return $this->ok('Authenticated', [
-            'applicant' => $applicant,
+            'applicant' => ApplicantResource::make($applicant),
             'token' => $token,
         ]);
     }
@@ -69,21 +68,6 @@ class AuthController extends Controller
     public function logout()
     {
         Auth::user()->currentAccessToken()->delete();
-
         return response()->noContent();
-    }
-
-    private  function complete(CompleteRegistrationRequest $request)
-    {
-        $applicant = tap(Auth::user(), function (Applicant $applicant) use (
-            $request
-        ) {
-            $applicant->skills = $request->skills;
-            $applicant->update($request->only('job_title'));
-        });
-
-        return $this->ok('Applicant successfully completed registration.', [
-            'applicant' => ApplicantResource::make($applicant),
-        ]);
     }
 }

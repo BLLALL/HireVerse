@@ -50,7 +50,7 @@ class EmailVerificationNotification extends Notification
             ->subject('Verify Your Email Address')
             ->view('emails.verify', [
                 'verificationUrl' => $verificationUrl,
-                'logo' => config('app.url').'images/logo.png',
+                'logo' => config('app.url') . 'images/logo.png',
                 'appName' => config('app.name'),
             ]);
     }

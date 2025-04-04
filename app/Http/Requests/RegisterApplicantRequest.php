@@ -27,7 +27,7 @@ class RegisterApplicantRequest extends FormRequest
             'email' => ['required', 'email', 'unique:applicants,email', 'max:80'],
             'password' => ['required', 'string', 'min:8'],
             'job_title' => 'required|string|max:100',
-            'skills' => 'required|array|min:1|max:50',
+            'skills' => 'sometimes|array|min:1|max:50',
             'skills.*' => 'string|max:50',
         ];
     }
