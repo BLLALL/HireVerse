@@ -49,4 +49,18 @@ class ApplicantProfileController extends Controller
 
         return $this->ok('Password changed, please login again!');
     }
+
+    public function deleteAccount()
+    {
+        $applicant = Auth()->user();
+        if ($applicant->cv) {
+            Storage::delete($applicant->cv);
+        }
+        if ($applicant->avatar) {
+            Storage::delete($applicant->avatar);
+        }
+        $applicant->delete();
+        $applicant->currentAccessToken()->delete();
+        return $this->ok('Account deleted successfully.');
+    }
 }
