@@ -48,7 +48,7 @@ class ExceptionHandler
                 405
             ),
 
-            $exception instanceof QueryException => $this->handleQueryException($exception),
+            // $exception instanceof QueryException => $this->handleQueryException($exception),
 
             default => config('app.debug') ? false : $this->error('Server error', 500)
         };

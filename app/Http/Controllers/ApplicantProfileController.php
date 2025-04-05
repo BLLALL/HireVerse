@@ -7,6 +7,7 @@ use App\Http\Requests\UpdateApplicantProfileRequest;
 use App\Http\Resources\ApplicantResource;
 use App\Models\Applicant;
 use App\Traits\ApiResponses;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
 class ApplicantProfileController extends Controller
@@ -52,14 +53,14 @@ class ApplicantProfileController extends Controller
 
     public function deleteAccount()
     {
-        $applicant = Auth()->user();
+        $applicant = Auth::user();
         if ($applicant->cv) {
             Storage::delete($applicant->cv);
         }
         if ($applicant->avatar) {
             Storage::delete($applicant->avatar);
         }
-        $applicant->forceDelete();
+        $applicant->delete();
         $applicant->currentAccessToken()->delete();
 
         return $this->ok('Account deleted successfully.');

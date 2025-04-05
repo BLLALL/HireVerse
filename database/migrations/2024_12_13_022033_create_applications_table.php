@@ -17,8 +17,14 @@ return new class extends Migration
             $table->string('cv');
             $table->enum('status', ApplicationStatus::values())->default(ApplicationStatus::Pending);
             $table->integer('cv_score')->nullable();
-            $table->foreignId('applicant_id')->nullable()->constrained('applicants');
-            $table->foreignId('job_id')->nullable()->constrained('jobs');
+            $table->foreignId('applicant_id')
+                ->nullable()
+                ->constrained('applicants')
+                ->onDelete('cascade');
+            $table->foreignId('job_id')
+                ->nullable()
+                ->constrained('jobs')
+                ->onDelete('cascade');
             $table->unique(['job_id', 'applicant_id']);
             $table->date('inteview_date')->nullable();
             $table->timestamps();
