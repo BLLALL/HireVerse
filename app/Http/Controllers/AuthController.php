@@ -38,7 +38,7 @@ class AuthController extends Controller
             ],
             201
         );
-    }   
+    }
 
     public function login(LoginApplicantRequest $request)
     {
@@ -54,7 +54,7 @@ class AuthController extends Controller
         }
 
         $token = $applicant->createToken(
-            'API token for ' . $applicant->email,
+            'API token for '.$applicant->email,
             ['*'],
             now()->addMonth()
         )->plainTextToken;
@@ -68,6 +68,7 @@ class AuthController extends Controller
     public function logout()
     {
         Auth::user()->currentAccessToken()->delete();
+
         return response()->noContent();
     }
 }

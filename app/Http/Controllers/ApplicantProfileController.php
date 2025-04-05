@@ -59,8 +59,9 @@ class ApplicantProfileController extends Controller
         if ($applicant->avatar) {
             Storage::delete($applicant->avatar);
         }
-        $applicant->delete();
+        $applicant->forceDelete();
         $applicant->currentAccessToken()->delete();
+
         return $this->ok('Account deleted successfully.');
     }
 }
