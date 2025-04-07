@@ -19,7 +19,6 @@ class AuthController extends Controller
     {
         $applicant = Applicant::create($request->validated());
 
-        // $applicant->sendEmailVerificationNotification();
         SendVerificationMail::dispatch($applicant);
 
         $verificationToken = $applicant->createToken(
