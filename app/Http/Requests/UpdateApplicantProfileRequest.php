@@ -14,10 +14,10 @@ class UpdateApplicantProfileRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'first_name' => 'required|string|max:50',
+            'first_name' => 'sometimes|required|string|max:50',
             'last_name' => 'nullable|string|max:50',
             'cv' => 'nullable|file|mimes:pdf|max:10240',
-            'job_title' => 'required|string|max:100',
+            'job_title' => 'sometimes|required|string|max:100',
             'skills' => 'sometimes|array|min:1|max:50',
             'skills.*' => 'string|max:50',
             'github_url' => 'nullable|url:http,https',
