@@ -25,6 +25,7 @@ return new class extends Migration
             $table->string('currency')->default('USD');
             $table->enum('work_hours', WorkingHours::values())->default('fixed_schedule');
             $table->enum('work_location', WorkLocation::values())->default('onsite');
+            $table->string('job_location')->nullable();
             $table->text('requirements');
             $table->text('responsibilities');
             $table->boolean('is_available')->default(true);

@@ -51,6 +51,7 @@ class JobController extends Controller
         ]);
     }
 
+
     private function getAuthenticatedCompany($request): ?\App\Models\Company
     {
         $tokenable = $request->user()?->currentAccessToken()->tokenable;

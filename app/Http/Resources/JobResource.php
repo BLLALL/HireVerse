@@ -22,6 +22,7 @@ class JobResource extends JsonResource
                 'type' => $this->type,
                 'experienceLevel' => $this->experience_level,
                 'workLocation' => $this->work_location,
+                'jobLocation' => $this->job_location,
                 'isAvailable' => $this->is_available,
                 'availableTo' => $this->available_to?->toDateString(),
                 'maxApplicants' => $this->max_applicants,

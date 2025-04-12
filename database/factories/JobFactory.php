@@ -28,6 +28,7 @@ class JobFactory extends Factory
             'summary' => fake()->sentence(),
             'salary' => fake()->numberBetween(500, 10000),
             'work_location' => fake()->randomElement(WorkLocation::values()),
+            'job_location' => fake()->city(),
             'work_hours' => fake()->randomElement(WorkingHours::values()),
             'requirements' => fake()->sentence(),
             'responsibilities' => fake()->paragraph(2),

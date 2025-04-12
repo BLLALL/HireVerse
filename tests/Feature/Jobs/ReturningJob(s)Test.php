@@ -26,8 +26,8 @@ it('has correct structure for index enpoint', function () {
                     'salary',
                     'currency',
                     'summary',
-                    'createdAt',
-                    'updatedAt',
+                    'created',
+                    'updated',
                 ],
                 'links' => [
                     'self',
@@ -74,8 +74,8 @@ it('has correct structure for show enpoint', function () {
                 'responsibilities',
                 'workHours',
                 'skills',
-                'createdAt',
-                'updatedAt',
+                'created',
+                'updated',
             ],
             'links' => [
                 'self',

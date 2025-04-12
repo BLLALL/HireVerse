@@ -73,11 +73,12 @@ it('validates field types and constraints', function () {
 });
 
 it('creates a job successfully', function () {
+    
     $response = $this->postJson('api/jobs', $this->validJob, [
         'Authorization' => 'Bearer '.$this->token,
         'Accept' => 'application/json',
     ]);
-
+    dd($response->getContent());
     $response
         ->assertCreated()
         ->assertJsonFragment(collect($this->validJob)
@@ -102,7 +103,8 @@ it('creates a job successfully', function () {
                     'availableTo',
                     'maxApplicants',
                     'skills',
-                    'createdAt',
+                    'created',
+                    'updated',
                 ],
                 'relationships' => [
                     'company' => [

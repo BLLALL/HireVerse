@@ -9,6 +9,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Carbon\Carbon;
+use App\Enums\ApplicationStatus;
 
 class Job extends Model
 {
@@ -59,5 +61,52 @@ class Job extends Model
     public function getSkillsAttribute()
     {
         return $this->skills()->pluck('title');
+    }
+
+    public function scopePublishedLastMonth($query)
+    {
+        return $query->whereMonth('created_at', now()->subMonth()->month);
+    }
+
+    public function scopeWithAcceptedApplicants($query)
+    {
+        return $query->withCount(['applicants' => function ($q) {
+            $q->where('applications.status', ApplicationStatus::Accepted);
+        }]);
+    }
+
+    public function scopePublishedThisMonth($query)
+    {
+        return $query->whereMonth('created_at', now()->month);
+    }
+
+    public function scopeAcceptedThisMonth($query)
+    {
+        return $query->whereHas('applicants', function ($q) {
+            $q->where('applications.status', ApplicationStatus::Accepted)
+                ->whereMonth('applications.created_at', now()->month);
+        });
+    }
+
+    public function scopeAcceptedLastMonth($query)
+    {
+        return $query->whereHas('applicants', function ($q) {
+            $q->where('applications.status', ApplicationStatus::Accepted)
+                ->whereMonth('applications.created_at', now()->subMonth()->month);
+        });
+    }
+
+    public function scopeApplicationsThisMonth($query)
+    {
+        return $query->whereHas('applicants', function ($q) {
+            $q->whereMonth('applications.created_at', now()->month);
+        });
+    }
+
+    public function scopeApplicationsLastMonth($query)
+    {
+        return $query->whereHas('applicants', function ($q) {
+            $q->whereMonth('applications.created_at', now()->subMonth()->month);
+        });
     }
 }

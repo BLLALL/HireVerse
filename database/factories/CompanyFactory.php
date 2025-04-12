@@ -52,6 +52,7 @@ class CompanyFactory extends Factory
             ]),
             'employee_no' => fake()->numberBetween(3, 100000),
             'logo' => 'https://loremflickr.com/50/50/logo',
+            'email_verified_at' => now(),
         ];
     }
 }

@@ -52,6 +52,7 @@ class StoreJobRequest extends FormRequest
                 'string',
                 Rule::in(WorkLocation::values()),
             ],
+            'job_location' => ['sometimes', 'string', 'max:255'],
             'requirements' => ['sometimes', 'string', 'max:1200', 'min:10'],
             'responsibilities' => ['sometimes', 'string', 'max:1200', 'min:10'],
             'is_available' => ['nullable', 'boolean'],
