@@ -7,12 +7,13 @@ use App\Http\Requests\UpdateApplicantProfileRequest;
 use App\Http\Resources\ApplicantResource;
 use App\Models\Applicant;
 use App\Traits\ApiResponses;
+use App\Traits\FileHelpers;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
 class ApplicantProfileController extends Controller
 {
-    use ApiResponses;
+    use ApiResponses, FileHelpers;
 
     public function update(UpdateApplicantProfileRequest $request)
     {
@@ -23,7 +24,9 @@ class ApplicantProfileController extends Controller
             if ($applicant->cv) {
                 Storage::delete($applicant->cv);
             }
-            $attributes['cv'] = $request->file('cv')->store('applicants/cvs');
+            
+            $cvFile = $request->file('cv');
+            $attributes['cv'] = $cvFile->storeAs('applicants/cvs', $this->generateUniqueName($cvFile));
         }
 
         if ($request->hasFile('avatar')) {
