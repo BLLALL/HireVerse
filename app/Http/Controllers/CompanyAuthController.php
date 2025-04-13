@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\LoginCompanyRequest;
 use App\Http\Requests\RegisterCompanyRequest;
+use App\Jobs\SendVerificationMail;
 use App\Models\Company;
 use App\Traits\ApiResponses;
 use App\Traits\TokenHelpers;
@@ -17,7 +18,8 @@ class CompanyAuthController extends Controller
     public function register(RegisterCompanyRequest $request)
     {
         $company = Company::create($request->validated());
-        $company->sendEmailVerificationNotification();
+
+        SendVerificationMail::dispatch($company);
 
         return $this->success(
             'Company successfully created, please verify your email',
