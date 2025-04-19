@@ -25,6 +25,7 @@ class Job extends Model
         'currency',
         'work_hours',
         'work_location',
+        'job_location',
         'experience_level',
         'responsibilities',
         'requirements',
