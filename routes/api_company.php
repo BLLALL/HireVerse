@@ -2,13 +2,16 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\JobController;
+use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\CompanyAuthController;
 use App\Http\Controllers\CompanyJobsController;
 
 
 Route::middleware(['auth:sanctum', 'ability:*', 'verified', 'can:company'])->group(function () {
     Route::get('company/jobs', [CompanyJobsController::class, 'index']);
-    Route::post('jobs', [JobController::class, 'store']);
+    Route::patch('companies', [CompanyController::class, 'update']);
+    Route::post('jobs', [JobController::class, 'store' ]);
+    Route::delete('jobs/{job}', [JobController::class, 'destroy']);
     Route::post('company/logout', [CompanyAuthController::class, 'logout']);
 });
 

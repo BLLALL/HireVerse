@@ -42,7 +42,6 @@ class JobController extends Controller
         if (! $company) {
             return $this->error('You are not authorized to create a job', 403);
         }
-
         $job = $this->createJob($company, $request->validated());
         $this->attachSkills($job, $request->validated()['skills'] ?? []);
 
@@ -69,5 +68,11 @@ class JobController extends Controller
         collect($skills)->each(
             fn ($skillTitle) => $job->skills()->create(['title' => $skillTitle])
         );
+    }
+
+    public function destroy(Job $job): mixed
+    {
+        $job->delete();
+        return response()->json(['message' => 'Job deleted successfully']);
     }
 }
