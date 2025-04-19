@@ -38,7 +38,7 @@ Route::get('storage/{filePath}', function ($filePath) {
 
 Route::get('test', function () {
 
-    $job = Job::first();
+    $job = Job::find(1);
     
     Application::whereJobId($job->id)->whereIn('status', [ApplicationStatus::CVProcessing, ApplicationStatus::CVProcessed])->update([
         'status' => ApplicationStatus::Pending,

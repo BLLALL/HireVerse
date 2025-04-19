@@ -28,9 +28,9 @@ class CheckJobApplications implements ShouldQueue
             $job->update(['is_available' => false]);
         }
 
-        if ($maxApplicantsReached || count($pendingApplications) >= 3) {
+        if ($maxApplicantsReached || $pendingApplications->count() >= 3) {
             $pendingApplications->toQuery()->update(['status' => ApplicationStatus::CVProcessing]);
-            FilterCVs::dispatch($pendingApplications);
+            FilterCVs::dispatch($pendingApplications)->onQueue('ai');
         }
     }
 }

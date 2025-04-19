@@ -15,11 +15,6 @@ class FilterCVs implements ShouldQueue
     public $backoff = [5, 10];
     
     public function __construct(protected Collection $applications) {}
-    
-    public function viaQueue(): string
-    {
-        return 'ai';
-    }
 
     public function handle(): void
     {

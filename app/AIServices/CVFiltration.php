@@ -9,6 +9,7 @@ use Exception;
 use GuzzleHttp\Client;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class CVFiltration
 {
@@ -21,14 +22,19 @@ class CVFiltration
             $cvPath = $application->cv;
             $fileName = substr($cvPath, strrpos($cvPath, '/') + 1);
 
+            if (Storage::fileMissing($application->cv)) {
+                throw new Exception("File \"{$application->cv}\" not found!");
+            }
+
             $this->requestData[] = [
                 'name'     => 'cvFiles',
-                'contents' => fopen(public_path('storage/' . $application->cv), 'r'),
+                'contents' => fopen(Storage::path($application->cv), 'r'),
                 'filename' => $fileName,
             ];
         }
 
-        $job = Job::find($applications[0]->job_id);
+        $job = Job::find($this->applications[0]->job_id);
+
         $this->requestData[] = [
             'name'     => 'jobDescription',
             'contents' => JobResource::make($job)->toJson(),
