@@ -28,6 +28,7 @@ class Company extends Authenticatable implements MustVerifyEmail
         'description',
         'insights',
         'industry',
+        'logo',
     ];
 
     protected $hidden = ['password'];
