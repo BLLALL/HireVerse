@@ -53,6 +53,25 @@ class Job extends Model
             ->as('application');
     }
 
+    public function setSkillsAttribute($skills)
+    {
+        if (empty($skills)) {
+            return;
+        }
+
+        $uniqueSkills = array_unique($skills);
+        $skills = array_map(function ($skill) {
+            return [
+                'title' => $skill,
+                'skillable_type' => self::class,
+                'skillable_id' => $this->id,
+            ];
+        }, $uniqueSkills);
+
+        $this->skills()->delete();
+        Skill::insert($skills);
+    }
+
     public function skills(): MorphMany
     {
         return $this->morphMany(Skill::class, 'skillable');

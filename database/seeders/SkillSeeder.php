@@ -23,7 +23,7 @@ class SkillSeeder extends Seeder
             'Data Science', 'Cybersecurity', 'Penetration Testing', 'Blockchain', 'Smart Contracts',
         ]);
 
-        foreach (Job::all() as $job) {
+        foreach (Job::where('id', '>', 1)->get() as $job) {
             $randSkills = $skills->random(rand(3, 8))->map(fn ($skill) => ['title' => $skill])->toArray();
             $job->skills()->createMany($randSkills);
         }

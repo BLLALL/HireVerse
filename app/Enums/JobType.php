@@ -8,7 +8,7 @@ enum JobType: string
 {
     use EnumHelpers;
 
-    case PartTime = 'part_time';
-    case FullTime = 'full_time';
-    case Freelance = 'freelance';
+    case PartTime = 'Part-time';
+    case FullTime = 'Full-time';
+    case Freelance = 'Freelance';
 }

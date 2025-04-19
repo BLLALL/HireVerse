@@ -54,6 +54,7 @@ return [
 
     'url' => env('APP_URL', 'http://localhost:8000'),
     'frontend_url' => env('FRONTEND_URL', 'http://localhost:5173'),
+    'ai_services_url' => env('AI_SERVICES_URL', 'http://localhost:5000'),
 
     /*
     |--------------------------------------------------------------------------
