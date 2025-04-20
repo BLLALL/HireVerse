@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -24,7 +25,7 @@ class JobResource extends JsonResource
                 'workLocation' => $this->work_location,
                 'jobLocation' => $this->job_location,
                 'isAvailable' => $this->is_available,
-                'availableTo' => $this->available_to?->toDateString(),
+                'availableTo' => Carbon::make($this->available_to)?->toDateString(),
                 'maxApplicants' => $this->max_applicants,
                 'companyLogo' => $this->company->logo,
                 'companyName' => $this->company->name,

@@ -21,13 +21,13 @@ class ApplicantJobResource extends JsonResource
             'attributes' => [
                 'jobTitle' => $this->title,
                 'companyName' => $this->company->name,
-                'applied' => Carbon::parse($this->applied_at)->diffForHumans(),
+                'appliedAt' => Carbon::parse($this->applied_at)->format('M. j, Y, g:i a'),
                 'status' => $this->status,
                 'cv' => $this->cv,
                 'cvScore' => $this->cv_score,
             ],
             'links' => [
-                'self' => route('jobs.show', ['job' => $this->id]),
+                'job' => route('jobs.show', ['job' => $this->id]),
             ],
             'relationships' => [
                 'company' => [

@@ -36,9 +36,6 @@ class Job extends Model
         'company_id',
     ];
 
-    protected $casts = [
-        'available_to' => 'datetime',
-    ];
 
     public function company(): BelongsTo
     {

@@ -32,7 +32,7 @@ class JobSeeder extends Seeder
             'requirements' => 'Basic experience with PHP and Laravel. Understanding of MVC architecture and APIs. Familiarity with databases and SQL. Knowledge of Git for version control. Problem-solving mindset and eagerness to learn.',
             'responsibilities' => 'Develop and maintain backend features using Laravel. Build and integrate RESTful APIs. Work with databases (MySQL, PostgreSQL). Debug and optimize backend performance. Collaborate with the team to improve development processes.',
             'is_available' => true,
-            'available_to' => now()->addDay(),
+            'available_to' => now()->addDay()->toDateString(),
             'max_applicants' => 4,
             'company_id' => 1,
         ]);

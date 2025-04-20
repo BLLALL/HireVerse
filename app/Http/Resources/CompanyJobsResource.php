@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -15,7 +16,7 @@ class CompanyJobsResource extends JsonResource
     public function toArray(Request $request): array
     {
         $createdAt = $this->created_at->diffForHumans();
-        $availableTo = $this->available_to?->diffForHumans();
+        $availableTo = Carbon::make($this->available_to)?->diffForHumans();
         $duration = floor($this->created_at->diffInDays($this->available_to));
         
         return [

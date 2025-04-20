@@ -26,6 +26,5 @@ Route::middleware('api_guest')->group(function () {
     Route::controller(AuthController::class)->group(function () {
         Route::post('register', 'register');
         Route::post('login', 'login');
-        Route::patch('complete', 'complete')->withoutMiddleware('api_guest')->middleware(['auth:sanctum']);
     });
 });
