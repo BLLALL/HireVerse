@@ -18,18 +18,18 @@ return new class extends Migration
         Schema::create('jobs', function (Blueprint $table) {
             $table->id();
             $table->string('title');
-            $table->enum('type', JobType::values())->default('full_time');
-            $table->enum('experience_level', ExperienceLevel::values())->default('junior');
+            $table->enum('type', JobType::values())->default(JobType::FullTime);
+            $table->enum('experience_level', ExperienceLevel::values())->default(ExperienceLevel::Junior);
             $table->string('summary')->nullable();
             $table->bigInteger('salary')->nullable();
             $table->string('currency')->default('USD');
-            $table->enum('work_hours', WorkingHours::values())->default('fixed_schedule');
-            $table->enum('work_location', WorkLocation::values())->default('onsite');
+            $table->enum('work_hours', WorkingHours::values())->default(WorkingHours::FixedShecdule);
+            $table->enum('work_location', WorkLocation::values())->default(WorkLocation::Onsite);
             $table->string('job_location')->nullable();
             $table->text('requirements');
             $table->text('responsibilities');
             $table->boolean('is_available')->default(true);
-            $table->dateTime('available_to')->nullable();
+            $table->date('available_to')->nullable();
             $table->smallInteger('max_applicants')->nullable();
             $table->smallInteger('required_no_of_hires')->nullable();
             $table->foreignId('company_id')->nullable()->constrained('companies');

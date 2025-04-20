@@ -7,6 +7,7 @@ use App\Enums\JobType;
 use App\Enums\WorkingHours;
 use App\Enums\WorkLocation;
 use App\Models\Company;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -32,7 +33,7 @@ class JobFactory extends Factory
             'work_hours' => fake()->randomElement(WorkingHours::values()),
             'requirements' => fake()->sentence(),
             'responsibilities' => fake()->paragraph(2),
-            'available_to' => fake()->dateTimeBetween('now', '+2 month'),
+            'available_to' => Carbon::make(fake()->dateTimeBetween('now', '+2 month'))->toDateString(),
             'max_applicants' => fake()->numberBetween(50, 500),
             'company_id' => Company::factory(),
         ];

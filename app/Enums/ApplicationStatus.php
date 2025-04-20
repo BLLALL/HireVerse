@@ -8,9 +8,16 @@ enum ApplicationStatus: string
 {
     use EnumHelpers;
 
-    case Eligible = 'cv_eligible';
-    case Rejected = 'rejected';
-    case Accepted = 'accepted';
-    case Pending = 'pending';
-    case Interviewed = 'interviewed';
+    case Pending = 'Pending';
+
+    case CVProcessing = 'CV processing';
+    case CVProcessed = 'CV processed';
+    case CVEligible = 'CV eligible';
+    case CVRejected = 'CV rejected';
+    
+    case InterviewScheduled = 'Interview scheduled';
+    case Interviewed = 'Interviewed';
+
+    case Accepted = 'Accepted';
+    case Rejected = 'Rejected';
 }

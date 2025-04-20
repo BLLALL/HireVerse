@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Enums\ApplicationStatus;
 use App\Models\Applicant;
 use App\Models\Application;
 use App\Models\Job;
@@ -14,9 +15,10 @@ class ApplicationSeeder extends Seeder
      */
     public function run(): void
     {
-        $jobs = Job::get();
+        $jobs = Job::where('id', '>', 1)->get();
         $applicants = Applicant::get();
 
+        
         foreach ($applicants as $applicant) {
             $n = fake()->numberBetween(1, 12);
             $job_ids = $jobs->pluck('id')->shuffle()->toArray();
@@ -27,5 +29,17 @@ class ApplicationSeeder extends Seeder
                 ]);
             }
         }
+                
+        $testApplications = Application::factory(3)->create([
+            'status' => ApplicationStatus::Pending,
+            'cv_score' => null,
+            'job_id' => 1,
+            'interview_date' => null,
+        ]);
+        
+        $testApplications[0]->update(['cv' => 'applications/Elsayed.pdf', 'applicant_id' => 1]);
+        $testApplications[1]->update(['cv' => 'applications/Belal.pdf', 'applicant_id' => 2]);
+        $testApplications[2]->update(['cv' => 'applications/Salma.pdf', 'applicant_id' => 3]);
+        
     }
 }

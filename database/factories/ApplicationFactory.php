@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Enums\ApplicationStatus;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -20,8 +21,17 @@ class ApplicationFactory extends Factory
         return [
             'cv' => fake()->filePath(),
             'status' => $status = fake()->randomElement(ApplicationStatus::values()),
-            'cv_score' => $status != ApplicationStatus::Pending ? fake()->numberBetween(10, 100) : null,
-            'inteview_date' => $status == ApplicationStatus::Eligible ? fake()->date('+6 months') : null,
+            'cv_score' => ! in_array($status, [
+                'Pending',
+                'CV processing'
+            ]) ? fake()->numberBetween(10, 100) : null,
+
+            'interview_date' => in_array($status, [
+                'Interview scheduled',
+                'Interviewed',
+                'Accepted',
+                'Rejected'
+            ]) ? Carbon::make(now()->addDays(random_int(5, 50)))->toDateString() : null,
         ];
     }
 }

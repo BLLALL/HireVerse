@@ -1,10 +1,14 @@
 <?php
 
+use App\Enums\ApplicationStatus;
+use App\Events\ApplicantApplied;
 use App\Http\Controllers\ApplicantController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\CurrentUserController;
 use App\Http\Controllers\JobController;
 use App\Http\Controllers\VerificationController;
+use App\Models\Application;
+use App\Models\Job;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
 
@@ -31,6 +35,17 @@ Route::get('storage/{filePath}', function ($filePath) {
     return response()->file(public_path('storage/' . $filePath));
 })->where('filePath', '.*');
 
-// Route::get('test', function () {
-//     return 'HireVerse - HierServe';
-// });
+
+Route::get('test', function () {
+
+    $job = Job::find(1);
+    
+    Application::whereJobId($job->id)->whereIn('status', [ApplicationStatus::CVProcessing, ApplicationStatus::CVProcessed])->update([
+        'status' => ApplicationStatus::Pending,
+        'cv_score' => null
+    ]);
+    
+    ApplicantApplied::dispatch($job);
+
+    return 'HireVerse - HierServe';
+});

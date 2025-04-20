@@ -9,7 +9,6 @@ trait FileHelpers
         $fileName = $file->getClientOriginalName();
         $extension = $file->getClientOriginalExtension();
         $name = substr($fileName, 0, strrpos($fileName, '.'));
-        $uniqueId = uniqid();
-        return $name . '_' . $uniqueId . '.' . $extension;
+        return $name . '_' . uniqid() . '.' . $extension;
     }
 }
