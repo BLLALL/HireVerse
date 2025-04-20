@@ -24,7 +24,6 @@ class UpdateCompanyRequest extends FormRequest
         return [
             'name' => 'sometimes|required|string|max:50',
             'ceo' => 'sometimes|required|string|max:50',
-            'email' => 'sometimes|required|email|unique:companies,email',
             'password' => 'sometimes|required|string|min:8',
             'location' => 'sometimes|required|string|max:255',
             'employee_no' => 'sometimes|required|integer|min:1|max:1000000',
