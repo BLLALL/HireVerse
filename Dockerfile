@@ -15,15 +15,15 @@ RUN apt-get update -y && apt-get install -y \
 
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
-WORKDIR /app
+WORKDIR /hireverse
 
-COPY . /app
+COPY . /hireverse
 
 # Copy supervisor configuration
 COPY docker/supervisor/horizon.conf /etc/supervisor/conf.d/horizon.conf
 
 # Create log directory
-RUN mkdir -p /app/storage/logs
+RUN mkdir -p /hireverse/storage/logs
 
 RUN composer update --with-all-dependencies --no-scripts \
     && composer install --no-scripts \
