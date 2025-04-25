@@ -11,9 +11,34 @@ use App\Models\Application;
 use App\Models\Job;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
+use Symfony\Component\Process\Process;
 
 require_once __DIR__ . '/api_applicant.php';
 require_once __DIR__ . '/api_company.php';
+
+Route::post('/github-webhook', function (\Illuminate\Http\Request $request) {
+    $secret = env('GITHUB_SECRET');
+    $signature = 'sha256=' . hash_hmac('sha256', $request->getContent(), $secret);
+
+    if (!hash_equals($signature, $request->header('X-Hub-Signature-256'))) {
+        \Log::warning('Webhook Signature Mismatch!');
+        return response()->json(['message' => 'Invalid signature'], 403);
+    }
+
+    \Log::info('Webhook received and verified.');
+    $process = new Process(['git', 'pull']);
+    $process->run();
+
+    if (!$process->isSuccessful()) {
+        \Log::error('Git Pull Error: ' . $process->getErrorOutput());
+        return response()->json(['message' => 'Git pull failed!'], 500);
+    }
+
+    return response()->json(['message' => 'Git pull executed successfully!']);
+});
+
+
+
 
 Route::controller(VerificationController::class)->group(function () {
     Route::get('{type}/email/verify/{id}', 'verify')->name('verification.verify');
