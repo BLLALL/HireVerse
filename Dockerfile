@@ -15,20 +15,20 @@ RUN apt-get update -y && apt-get install -y \
 
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
-WORKDIR /app
+WORKDIR /hireverse
 
-COPY . /app
+COPY . /hireverse
 
 # Copy supervisor configuration
 COPY docker/supervisor/horizon.conf /etc/supervisor/conf.d/horizon.conf
 
 # Create log directory
-RUN mkdir -p /app/storage/logs
+RUN mkdir -p /hireverse/storage/logs
 
 RUN composer update --with-all-dependencies --no-scripts \
     && composer install --no-scripts \
     && composer dump-autoload -o
 
 # Change CMD to handle migrations, seeding, and supervisor
-CMD php artisan migrate:fresh --seed && supervisord -c /etc/supervisor/supervisord.conf && php artisan serve --host=0.0.0.0 --port=8000
+CMD php artisan migrate:fresh --seed && supervisord -c /etc/supervisor/supervisord.conf && php artisan storage:link && php artisan serve --host=0.0.0.0 --port=8000
 EXPOSE 8000
