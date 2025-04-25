@@ -14,6 +14,9 @@ Route::middleware(['auth:sanctum', 'ability:*', 'verified', 'can:company'])->gro
 
     Route::get('company/jobs', [CompanyJobsController::class, 'index']);
     Route::get('company/jobs/{job}/applicants', [CompanyJobsController::class, 'applicants']);
+
+    Route::patch('company/jobs/{job}/min-score', [CompanyJobsController::class, 'setMinScore']);
+    
     
     Route::post('jobs', [JobController::class, 'store' ]);
     Route::delete('jobs/{job}', [JobController::class, 'destroy']);

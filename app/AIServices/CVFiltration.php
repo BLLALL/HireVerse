@@ -3,17 +3,21 @@
 namespace App\AIServices;
 
 use App\Enums\ApplicationStatus;
+use App\Enums\JobPhase;
 use App\Http\Resources\JobResource;
+use App\Models\Application;
 use App\Models\Job;
 use Exception;
 use GuzzleHttp\Client;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
 class CVFiltration
 {
     protected $requestData = [];
+    protected $job;
 
     public function __construct(protected Collection $applications)
     {
@@ -33,13 +37,12 @@ class CVFiltration
             ];
         }
 
-        $job = Job::find($this->applications[0]->job_id);
+        $this->job = Job::find($this->applications[0]->job_id);
 
         $this->requestData[] = [
             'name'     => 'jobDescription',
-            'contents' => JobResource::make($job)->toJson(),
+            'contents' => JobResource::make($this->job)->toJson(),
         ];
-
     }
 
     public function process()
@@ -54,7 +57,7 @@ class CVFiltration
             $body = json_decode($response->getBody(), true);
             $cvScores = $body['cvScores'];
 
-            for ($i = 0; $i < count($this->applications); $i++) {
+            for ($i = 0; $i < $this->applications->count(); $i++) {
                 $this->applications[$i]->cv_score = (float) $cvScores[$i];
                 $this->applications[$i]->save();
             }
@@ -65,6 +68,21 @@ class CVFiltration
         } catch (Exception $e) {
             DB::rollBack();
             throw $e;
+        }
+
+        $this->handleJobPhase();
+    }
+
+    public function handleJobPhase()
+    {
+        if ($this->job->is_available) {
+            return;
+        }
+
+        $allCVsProcessed = ! Application::whereJobId($this->job->id)->whereCvScore(null)->exists();
+
+        if ($allCVsProcessed && $this->job->phase == JobPhase::CVFiltration) {
+            $this->job->update(['phase' => JobPhase::Revision]);
         }
     }
 

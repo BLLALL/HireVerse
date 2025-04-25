@@ -1,6 +1,7 @@
 <?php
 
 use App\Enums\ExperienceLevel;
+use App\Enums\JobPhase;
 use App\Enums\JobType;
 use App\Enums\WorkingHours;
 use App\Enums\WorkLocation;
@@ -20,7 +21,7 @@ return new class extends Migration
             $table->string('title');
             $table->enum('type', JobType::values())->default(JobType::FullTime);
             $table->enum('experience_level', ExperienceLevel::values())->default(ExperienceLevel::Junior);
-            $table->string('summary')->nullable();
+            $table->string('summary', 510)->nullable();
             $table->bigInteger('salary')->nullable();
             $table->string('currency')->default('USD');
             $table->enum('work_hours', WorkingHours::values())->default(WorkingHours::FixedShecdule);
@@ -28,6 +29,7 @@ return new class extends Migration
             $table->string('job_location')->nullable();
             $table->text('requirements');
             $table->text('responsibilities');
+            $table->enum('phase', JobPhase::values())->default(JobPhase::CVFiltration);
             $table->boolean('is_available')->default(true);
             $table->date('available_to')->nullable();
             $table->smallInteger('max_applicants')->nullable();

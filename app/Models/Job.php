@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Carbon\Carbon;
 use App\Enums\ApplicationStatus;
+use App\Enums\JobPhase;
 
 class Job extends Model
 {
@@ -33,7 +34,12 @@ class Job extends Model
         'max_applicants',
         'is_available',
         'available_to',
+        'phase',
         'company_id',
+    ];
+
+    protected $casts = [
+        'phase' => JobPhase::class,
     ];
 
 

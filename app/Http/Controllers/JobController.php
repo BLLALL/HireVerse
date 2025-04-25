@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreJobRequest;
 use App\Http\Resources\JobResource;
+use App\Models\Application;
 use App\Models\Job;
 use App\Pipelines\Filters\JobFilters\ExperienceLevel;
 use App\Pipelines\Filters\JobFilters\JobType;
@@ -33,7 +34,11 @@ class JobController extends Controller
 
     public function show(Job $job): mixed
     {
-        return JobResource::make($job);
+        $applicantApplied = Application::whereApplicantId(auth()->id())->whereJobId($job->id)->exists();
+
+        return JobResource::make($job)->additional([
+            'applicantApplied' => $applicantApplied
+        ]);
     }
 
     public function store(StoreJobRequest $request): mixed
