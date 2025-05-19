@@ -103,7 +103,7 @@ class Applicant extends Authenticatable implements MustVerifyEmail
         Skill::insert($skills);
     }
 
-    public function getSkillsAttribute()
+    public function getSkillsTitlesAttribute()
     {
         return $this->skills()->pluck('title');
     }
