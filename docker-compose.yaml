@@ -6,8 +6,8 @@ services:
     container_name: laravel-app-container
     image: bllall/hireverse
     volumes:
-      - ./:/app
-      - ./vendor:/app/vendor
+      - ./:/hireverse
+      - ./vendor:/hireverse/vendor
     restart: always
     networks:
       - docker-network
@@ -39,7 +39,7 @@ services:
     image: postgres
     container_name: postgres-container
     restart: always
-    shm_size: 128mb
+    s`m_size: 128mb
     ports:
       - 5433:5432
     volumes:
