@@ -30,5 +30,5 @@ RUN composer update --with-all-dependencies --no-scripts \
     && composer dump-autoload -o
 
 # Change CMD to handle migrations, seeding, and supervisor
-CMD php artisan migrate:fresh --seed && supervisord -c /etc/supervisor/supervisord.conf && php artisan serve --host=0.0.0.0 --port=8000
+CMD php artisan migrate:fresh --seed && supervisord -c /etc/supervisor/supervisord.conf && php artisan storage:link && php artisan serve --host=0.0.0.0 --port=8000
 EXPOSE 8000
