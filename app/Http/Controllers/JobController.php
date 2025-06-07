@@ -23,18 +23,20 @@ class JobController extends Controller
 
     public function index(Recommendation $recommendation): mixed
     {
-        $recommendedJobsIds = [];
-        $recommendedJobs = [];
+        $key = "recommended_for_applicant_" . Auth::id();
         
-        if (Auth::guard('sanctum')->check()) {
-            $recommendedJobsIds = Cache::remember(
-                "recommended_for_applicant_" . Auth::id(), 
-                now()->addHours(6), 
-                fn()=> $recommendation->handle()
-            );
-            $recommendedJobs = Job::with('company')->whereIn('id', $recommendedJobsIds)->get();
+        $recommendedJobs = [];
+        $recommendedJobsIds = Cache::get($key, []);
+        
+        if (empty($recommendedJobsIds) && Auth::id()) {
+            $recommendedJobsIds = $recommendation->handle();
+
+            if (count($recommendedJobsIds)) {
+                Cache::put($key, $recommendedJobsIds, now()->addHours(6));
+            }
         }
 
+        $recommendedJobs = Job::with('company')->whereIn('id', $recommendedJobsIds)->get();
         
         $jobs = Job::available()->with('company')->whereNotIn('id', $recommendedJobsIds)->filter([
             Location::class,
