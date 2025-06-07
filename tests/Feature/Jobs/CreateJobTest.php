@@ -122,7 +122,7 @@ it('creates a job successfully', function () {
 
     $job = Job::where('title', $this->validJob['title'])->first();
 
-    expect($job->skills->toArray())->toEqual(
+    expect($job->skills_titles->toArray())->toEqual(
         $this->validJob['skills']
     );
 });

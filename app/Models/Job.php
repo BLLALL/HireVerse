@@ -9,7 +9,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Carbon\Carbon;
 use App\Enums\ApplicationStatus;
 use App\Enums\JobPhase;
 
@@ -42,6 +41,11 @@ class Job extends Model
         'phase' => JobPhase::class,
     ];
 
+
+    public function scopeAvailable()
+    {
+        return Job::whereIsAvailable(true);
+    }
 
     public function company(): BelongsTo
     {
@@ -81,7 +85,7 @@ class Job extends Model
         return $this->morphMany(Skill::class, 'skillable');
     }
 
-    public function getSkillsAttribute()
+    public function getSkillsTitlesAttribute()
     {
         return $this->skills()->pluck('title');
     }

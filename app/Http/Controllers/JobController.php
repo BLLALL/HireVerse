@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\AIServices\Recommendation;
 use App\Http\Requests\StoreJobRequest;
 use App\Http\Resources\JobResource;
 use App\Models\Application;
@@ -13,14 +14,29 @@ use App\Pipelines\Filters\JobFilters\RangeSalary;
 use App\Pipelines\Filters\JobFilters\Search;
 use App\Pipelines\Filters\JobFilters\WorkingHours;
 use App\Traits\ApiResponses;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 
 class JobController extends Controller
 {
     use ApiResponses;
 
-    public function index(): mixed
+    public function index(Recommendation $recommendation): mixed
     {
-        $jobs = Job::query()->filter([
+        $recommendedJobsIds = [];
+        $recommendedJobs = [];
+        
+        if (Auth::guard('sanctum')->check()) {
+            $recommendedJobsIds = Cache::remember(
+                "recommended_for_applicant_" . Auth::id(), 
+                now()->addHours(6), 
+                fn()=> $recommendation->handle()
+            );
+            $recommendedJobs = Job::with('company')->whereIn('id', $recommendedJobsIds)->get();
+        }
+
+        
+        $jobs = Job::available()->with('company')->whereNotIn('id', $recommendedJobsIds)->filter([
             Location::class,
             Search::class,
             JobType::class,
@@ -28,8 +44,11 @@ class JobController extends Controller
             RangeSalary::class,
             WorkingHours::class,
         ]);
-
-        return JobResource::collection($jobs->latest()->get());
+        
+        return [
+            'recommendedJobs' => JobResource::collection($recommendedJobs), 
+            'jobs' => JobResource::collection($jobs->latest()->paginate(10))
+        ];
     }
 
     public function show(Job $job): mixed

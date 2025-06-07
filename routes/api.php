@@ -1,5 +1,6 @@
 <?php
 
+use App\AIServices\Recommendation;
 use App\Models\Job;
 use App\Models\Application;
 use App\Enums\ApplicationStatus;
@@ -41,7 +42,6 @@ Route::get('/dispatch-reverb', function() {
 
 
 
-
 Route::controller(VerificationController::class)->group(function () {
     Route::get('{type}/email/verify/{id}', 'verify')->name('verification.verify');
     Route::post('email/resend', 'resend')->middleware(['auth:sanctum', 'throttle:6,1', 'abilities:email-verification'])->name('verification.resend');
@@ -65,14 +65,14 @@ Route::get('storage/{filePath}', function ($filePath) {
 
 Route::get('test', function () {
 
-    $job = Job::find(1);
+    // $job = Job::find(1);
     
-    Application::whereJobId($job->id)->whereIn('status', [ApplicationStatus::CVProcessing, ApplicationStatus::CVProcessed])->update([
-        'status' => ApplicationStatus::Pending,
-        'cv_score' => null
-    ]);
+    // Application::whereJobId($job->id)->update([
+    //     'status' => ApplicationStatus::Pending,
+    //     'cv_score' => null
+    // ]);
     
-    ApplicantApplied::dispatch($job);
+    // ApplicantApplied::dispatch($job);
 
     return 'HireVerse - HierServe';
 });
