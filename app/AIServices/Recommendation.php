@@ -27,7 +27,7 @@ class Recommendation
             return $recommendations;
 
         } catch (Exception $e) {
-            throw $e;
+            return [['recommendedJobsIds' => []]];
         }
     }
 
