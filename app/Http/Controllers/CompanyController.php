@@ -5,11 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\Company;
 use App\Traits\FileHelpers;
 use App\Traits\ApiResponses;
-use Illuminate\Support\Facades\Auth;
 use App\Http\Resources\CompanyResource;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\UpdateCompanyRequest;
-use App\Http\Requests\UpdateCompanyPasswordRequest;
+use App\Http\Requests\UpdateApplicantPasswordRequest;
+use Illuminate\Support\Facades\Auth;
 
 class CompanyController extends Controller
 {
@@ -47,10 +47,16 @@ class CompanyController extends Controller
     }
 
 
-    public function changePassword(UpdateCompanyPasswordRequest $request)
-    {   
+    public function changePassword(UpdateApplicantPasswordRequest $request)
+    {
+        $token = $request->user()->currentAccessToken();
+        dd([
+            'token_name' => $token->name,
+            'token_provider' => get_class($request->user())
+        ]);
+        
         $company = $request->user();
-        $company->password = $request->password;
+        $company->password =    $request->password;
         $company->save();
         $company->currentAccessToken()->delete();
 

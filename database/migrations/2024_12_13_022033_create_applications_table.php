@@ -20,7 +20,6 @@ return new class extends Migration
             $table->foreignId('applicant_id')->nullable()->constrained('applicants')->onDelete('cascade');
             $table->foreignId('job_id')->nullable()->constrained('jobs')->onDelete('cascade');
             $table->unique(['job_id', 'applicant_id']);
-            $table->date('interview_date')->nullable();
             $table->timestamps();
         });
     }

@@ -1,0 +1,51 @@
+<?php
+
+namespace App\Events;
+
+use Illuminate\Broadcasting\Channel;
+use Illuminate\Broadcasting\InteractsWithSockets;
+use Illuminate\Broadcasting\PresenceChannel;
+use Illuminate\Broadcasting\PrivateChannel;
+use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
+use Illuminate\Foundation\Events\Dispatchable;
+use Illuminate\Queue\SerializesModels;
+
+class InterviewSheduled implements ShouldBroadcast
+{
+    use Dispatchable, InteractsWithSockets, SerializesModels;
+
+    /**
+     * Create a new event instance.
+     */
+    public function __construct(
+        public int $applicantId, 
+        ){}
+ 
+
+    /**
+     * Get the channels the event should broadcast on.
+     *
+     * @return array<int, \Illuminate\Broadcasting\Channel>
+     */
+    public function broadcastOn(): array
+    {
+        return [
+            new Channel('applicant.' . $this->applicantId),
+        ];
+    }
+
+    public function broadcastAs(): string
+    {
+        return 'interview.scheduled';
+    }
+    public function broadcastWith(): array
+    {
+        return [
+            'message' => 'Your interview has been scheduled.',
+            'applicant_id' => $this->applicantId,
+            // 'date' => $this->date,
+        ];
+    }
+
+    
+}

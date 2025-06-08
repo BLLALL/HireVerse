@@ -7,6 +7,7 @@ use App\Http\Controllers\OAuthController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth:sanctum', 'ability:*', 'verified', 'can:applicant'])->group(function () {
+    
     Route::prefix('applicant')->group(function () {
         Route::delete('/', [ApplicantProfileController::class, 'deleteAccount']);
         Route::get('jobs', [ApplicantJobsController::class, 'index']);
