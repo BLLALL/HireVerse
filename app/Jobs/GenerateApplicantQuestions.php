@@ -19,10 +19,19 @@ class GenerateApplicantQuestions implements ShouldQueue
     public function handle(QuestionsGenerationService $generator): void
     {
         $questions = $generator->generateQuestions(job: $this->j, questionsPerSkill: 3);
-
+        dd($questions);
         // create interview record with the application id
         // insert the generated questions into questions table with the interview id
+        $interview = $this->application->interviews()->create([
+            'job_id' => $this->j->id,
+            'status' => 'scheduled',
+        ]);
 
+        // Question::create([
+        //     'interview_id' => $interview->id,
+        //     'question' => $question,
+
+        // ])
         Log::info("Generated ". count($questions) . " questions for applicant ". $this->application->applicant_id);// 21 
     }
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Enums\ApplicationStatus;
 use App\Enums\JobPhase;
+use App\Events\InterviewSheduled;
 use App\Events\InterviewPhaseStarted;
 use App\Http\Resources\CompanyJobsResource;
 use App\Http\Resources\CompanyStatsResource;
@@ -57,14 +58,15 @@ class CompanyJobsController extends Controller
 
         $minCVScore = $request->validate(['min_score' => 'required|decimal:0,2|min:1|max:100'])['min_score'];
 
-        Application::whereJobId($job->id)->where('cv_score', '>=', $minCVScore)->update(['status' => ApplicationStatus::CVEligible]);
+        $acceptedApplications = Application::whereJobId($job->id)->where('cv_score', '>=', $minCVScore);
+        $acceptedApplications->update(['status' => ApplicationStatus::CVEligible]);
         Application::whereJobId($job->id)->where('cv_score', '<', $minCVScore)->update(['status' => ApplicationStatus::CVRejected]);
 
         $job->update(['phase' => JobPhase::Interview]);
 
         InterviewPhaseStarted::dispatch($job);
-
-        return $this->ok('Interview phase has started.');
+        $this->NotifyUsers($job);
+        return $this->ok('Interview phase has started.');   
     }
 
     public function authorize(Job $job)
@@ -73,4 +75,16 @@ class CompanyJobsController extends Controller
             throw new AuthorizationException;
         }
     }
+
+    private function NotifyUsers($job)
+    {
+       // Get all applicants who are eligible for the interview
+        $applicants = $job->applicants()
+            ->wherePivot('status', ApplicationStatus::CVEligible)
+            ->get();
+        foreach($applicants as $applicant) {
+            event(new InterviewSheduled($applicant->id));
+        }
+    }
+
 }

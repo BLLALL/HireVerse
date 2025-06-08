@@ -22,4 +22,10 @@ class Application extends Model
     {
         return $this->hasMany(Interview::class);
     }
+
+    // public function applicant(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    // {
+    //     return $this->belongsTo(Applicant::class);
+    // }
+    
 }

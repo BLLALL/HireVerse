@@ -26,12 +26,6 @@ class ApplicationFactory extends Factory
                 'CV processing'
             ]) ? fake()->numberBetween(10, 100) : null,
 
-            'interview_date' => in_array($status, [
-                'Interview scheduled',
-                'Interviewed',
-                'Accepted',
-                'Rejected'
-            ]) ? Carbon::make(now()->addDays(random_int(5, 50)))->toDateString() : null,
         ];
     }
 }

@@ -34,7 +34,6 @@ class ApplicationSeeder extends Seeder
             'status' => ApplicationStatus::Pending,
             'cv_score' => null,
             'job_id' => 1,
-            'interview_date' => null,
         ]);
         
         $testApplications[0]->update(['cv' => 'applications/Elsayed.pdf', 'applicant_id' => 1]);

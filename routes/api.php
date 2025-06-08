@@ -20,6 +20,8 @@ use App\Http\Controllers\VerificationController;
 require_once __DIR__ . '/api_applicant.php';
 require_once __DIR__ . '/api_company.php';
 
+
+
 Route::post('/github-webhook', function (\Illuminate\Http\Request $request) {
     $secret = env('GITHUB_SECRET');
     $signature = 'sha256=' . hash_hmac('sha256', $request->getContent(), $secret);
@@ -36,10 +38,6 @@ Route::post('/github-webhook', function (\Illuminate\Http\Request $request) {
     }
 
     return response()->json(['message' => 'Git pull executed successfully!']);
-});
-
-Route::get('/dispatch-reverb', function() {
-    broadcast(new ScheduleInterview());
 });
 
 
