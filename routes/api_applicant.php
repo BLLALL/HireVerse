@@ -9,7 +9,7 @@ use App\Jobs\GenerateApplicantQuestions;
 use App\Http\Controllers\OAuthController;
 use App\Http\Controllers\ApplicantJobsController;
 use App\Http\Controllers\ApplicantProfileController;
-use App\Http\Controllers\technicalInterviewController;
+use App\Http\Controllers\TechnicalInterviewController;
 
 Route::middleware(['auth:sanctum', 'ability:*', 'verified', 'can:applicant'])->group(function () {
     Broadcast::routes();
@@ -25,17 +25,9 @@ Route::middleware(['auth:sanctum', 'ability:*', 'verified', 'can:applicant'])->g
         Route::patch('profile', [ApplicantProfileController::class, 'update']);
         Route::patch('password', [ApplicantProfileController::class, 'changePassword']);
     });
-    Route::prefix('interviews')->group(function () {
-        Route::get('questions/jobs/{id}', function ($jobId) {
-            // Dispatch the job to generate questions for the applicant
-            $job = Job::findOrFail($jobId);
-            // $application = Application::where('job_id', $jobId)
-            //     ->where('applicant_id', Auth::user()->id)
-            //     ->firstOrFail();
-            return InterviewPhaseStarted::dispatch($job);
-        });
-        Route::post('answer', [technicalInterviewController::class, 'store']);
-    });
+
+    Route::get('interviews/{interview}/questions', [TechnicalInterviewController::class, 'index']);
+    Route::patch('questions/{questions}/answer', [TechnicalInterviewController::class, 'update']);
 
     Route::post('logout', [AuthController::class, 'logout']);
 });

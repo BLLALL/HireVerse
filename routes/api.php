@@ -16,6 +16,7 @@ use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\ApplicantController;
 use App\Http\Controllers\CurrentUserController;
 use App\Http\Controllers\VerificationController;
+use App\Models\Question;
 
 require_once __DIR__ . '/api_applicant.php';
 require_once __DIR__ . '/api_company.php';
@@ -68,7 +69,10 @@ Route::get('test', function () {
 
     
     // $job = Job::find(1);
+
+    // $questions = Question::where('interview_id', 1)->get();
     // InterviewPhaseStarted::dispatch($job);
+    // return response()->json($questions);
     
     // Application::whereJobId($job->id)->update([
     //     'status' => ApplicationStatus::Pending,

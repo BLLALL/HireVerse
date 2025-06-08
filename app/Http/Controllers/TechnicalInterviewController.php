@@ -2,13 +2,23 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Interview;
 use App\Models\Question;
+use App\Traits\ApiResponses;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
-class technicalInterviewController extends Controller
+class TechnicalInterviewController extends Controller
 {
-    public function store(Request $request)
+    use ApiResponses;
+
+    public function index(Interview $interview) {
+        $questions = Question::where('interview_id', $interview->id)->get(['id', 'question', 'difficulty', 'expected_keywords', 'assessment_criteria', 'interview_id']);
+
+        return response()->json($questions);
+    }
+    
+    public function update(Request $request)
     {
        $validator = Validator::make($request->all(), [
             'applicant_answer' => 'required|file|mimes:mp3,ogg,wav/max:50000', // 50MB max size

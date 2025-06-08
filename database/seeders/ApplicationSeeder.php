@@ -39,6 +39,5 @@ class ApplicationSeeder extends Seeder
         $testApplications[0]->update(['cv' => 'applications/Elsayed.pdf', 'applicant_id' => 1]);
         $testApplications[1]->update(['cv' => 'applications/Belal.pdf', 'applicant_id' => 2]);
         $testApplications[2]->update(['cv' => 'applications/Salma.pdf', 'applicant_id' => 3]);
-        
     }
 }

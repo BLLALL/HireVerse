@@ -12,7 +12,7 @@ class Question extends Model
         'difficulty',
         'expected_keywords',
         'assessment_criteria',
-
+        'interview_id',
     ];
 
     public function interview()

@@ -1,9 +1,9 @@
 <?php
 
 use App\Enums\QuestionDifficulty;
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
@@ -16,9 +16,10 @@ return new class extends Migration
             $table->id();
             $table->text('question');
             $table->string('applicant_answer')->nullable();
-            $table->enum('difficulty', QuestionDifficulty::values())->default('easy');
+            $table->enum('difficulty', QuestionDifficulty::values())->default(QuestionDifficulty::Easy);
             $table->string('expected_keywords');
             $table->text('assessment_criteria');
+            $table->foreignId('interview_id')->nullable()->constrained('interviews');
             $table->timestamps();
         });
     }

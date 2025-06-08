@@ -58,15 +58,16 @@ class CompanyJobsController extends Controller
 
         $minCVScore = $request->validate(['min_score' => 'required|decimal:0,2|min:1|max:100'])['min_score'];
 
-        $acceptedApplications = Application::whereJobId($job->id)->where('cv_score', '>=', $minCVScore);
-        $acceptedApplications->update(['status' => ApplicationStatus::CVEligible]);
+        Application::whereJobId($job->id)->where('cv_score', '>=', $minCVScore)->update(['status' => ApplicationStatus::CVEligible]);
         Application::whereJobId($job->id)->where('cv_score', '<', $minCVScore)->update(['status' => ApplicationStatus::CVRejected]);
 
         $job->update(['phase' => JobPhase::Interview]);
 
         InterviewPhaseStarted::dispatch($job);
+        
         $this->NotifyUsers($job);
-        return $this->ok('Interview phase has started.');   
+
+        return $this->ok('Interview phase has started.');
     }
 
     public function authorize(Job $job)

@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Application extends Model
 {
@@ -18,9 +18,9 @@ class Application extends Model
         'job_id',
     ];
 
-    public function questions(): HasMany
+    public function interview(): HasOne
     {
-        return $this->hasMany(Interview::class);
+        return $this->hasOne(Interview::class);
     }
 
     // public function applicant(): \Illuminate\Database\Eloquent\Relations\BelongsTo

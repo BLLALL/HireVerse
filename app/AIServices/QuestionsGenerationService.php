@@ -34,10 +34,8 @@ class QuestionsGenerationService
         
         if (Storage::fileExists($this->historyFile)) {
             $this->questionHistory = json_decode(Storage::get($this->historyFile), true);
-            log::info(Storage::get($this->historyFile));
         } else {
             Storage::put($this->historyFile, json_encode([]));
-            log::info("Created new history file at {$this->historyFile}");
         }
 
         $allQuestions = [];
@@ -52,7 +50,7 @@ class QuestionsGenerationService
             $attempt = 0;
             $questionsGenerated = 0;
 
-            while ($questionsGenerated < $questionsPerSkill || $attempt < $maxAttempts) {
+            while ($questionsGenerated < $questionsPerSkill && $attempt < $maxAttempts) {
                 $attempt++; 
 
                 $prompt = $this->getPrompt($jobTitle, $skill, $history, $questionsPerSkill - $questionsGenerated);
@@ -99,8 +97,6 @@ class QuestionsGenerationService
                                 'assessment_criteria' => $q['assessment_criteria'] ?? 'N/A',
                             ];
 
-                            // log::info("questions:", $allQuestions);
-
                             if ($questionsGenerated >= $questionsPerSkill) break;
                         }
                     }
@@ -116,12 +112,8 @@ class QuestionsGenerationService
         }
 
 
-        $file = Storage::put($this->historyFile, json_encode($this->questionHistory, JSON_PRETTY_PRINT));
-        if ($file === false) {
-            Log::error("Failed to save question history to {$this->historyFile}");
-        } else {
-            Log::info("Question history saved to {$this->historyFile}");
-        }
+        Storage::put($this->historyFile, json_encode($this->questionHistory, JSON_PRETTY_PRINT));
+        
         return $allQuestions;
     }
 
@@ -165,7 +157,7 @@ Generate {$remaining} *strictly new* technical interview questions for the skill
 "questions": [
     {
     "question": "[Well-structured, bounded question]",
-    "difficulty": "Easy | Medium | Hard",
+    "difficulty": "easy | medium | hard",
     "keywords": ["concept1", "concept2", "concept3"],
     "assessment_criteria": "Specific, measurable guidelines for evaluating responses. Include how each keyword will be assessed."
     }

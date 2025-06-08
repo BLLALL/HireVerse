@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Interview extends Model
 {
@@ -14,13 +14,15 @@ class Interview extends Model
         'ideal_answer',
         'applicant_answer',
         'score',
+        'application_id'
     ];
 
-    public function application(): BelongsTo
+    public function application(): HasOne
     {
-        return $this->belongsTo(Application::class);
+        return $this->hasOne(Application::class);
     }
-    public function question(): HasMany
+
+    public function questions(): HasMany
     {
         return $this->hasMany(Question::class);
     }
