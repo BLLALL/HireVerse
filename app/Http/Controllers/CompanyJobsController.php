@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Enums\ApplicationStatus;
 use App\Enums\JobPhase;
+use App\Events\InterviewPhaseStarted;
 use App\Http\Resources\CompanyJobsResource;
 use App\Http\Resources\CompanyStatsResource;
 use App\Models\Job;
@@ -60,6 +61,8 @@ class CompanyJobsController extends Controller
         Application::whereJobId($job->id)->where('cv_score', '<', $minCVScore)->update(['status' => ApplicationStatus::CVRejected]);
 
         $job->update(['phase' => JobPhase::Interview]);
+
+        InterviewPhaseStarted::dispatch($job);
 
         return $this->ok('Interview phase has started.');
     }

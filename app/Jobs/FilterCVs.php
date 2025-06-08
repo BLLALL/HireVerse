@@ -2,7 +2,7 @@
 
 namespace App\Jobs;
 
-use App\AIServices\CVFiltration;
+use App\AIServices\CVFiltrationService;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Queue\Queueable;
@@ -18,7 +18,7 @@ class FilterCVs implements ShouldQueue
 
     public function handle(): void
     {
-        CVFiltration::handle($this->applications);
+        CVFiltrationService::handle($this->applications);
     }
 
 }

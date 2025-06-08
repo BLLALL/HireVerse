@@ -1,10 +1,12 @@
 <?php
 
+use App\AIServices\QuestionsGeneration;
 use App\AIServices\Recommendation;
 use App\Models\Job;
 use App\Models\Application;
 use App\Enums\ApplicationStatus;
 use App\Events\ApplicantApplied;
+use App\Events\InterviewPhaseStarted;
 use App\Events\ScheduleInterview;
 use Illuminate\Support\Facades\Route;
 use Symfony\Component\Process\Process;
@@ -65,7 +67,10 @@ Route::get('storage/{filePath}', function ($filePath) {
 
 Route::get('test', function () {
 
+
+    
     // $job = Job::find(1);
+    // InterviewPhaseStarted::dispatch($job);
     
     // Application::whereJobId($job->id)->update([
     //     'status' => ApplicationStatus::Pending,

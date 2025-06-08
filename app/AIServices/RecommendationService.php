@@ -9,7 +9,7 @@ use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Auth;
 
 
-class Recommendation
+class RecommendationService
 {
     protected $requestData = [];
 
