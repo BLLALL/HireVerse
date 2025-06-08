@@ -80,7 +80,7 @@ class CompanyJobsController extends Controller
             ->wherePivot('status', ApplicationStatus::CVEligible)
             ->get();
         foreach($applicants as $applicant) {
-            broadcast(new InterviewSheduled($applicant->id));
+            event(new InterviewSheduled($applicant->id));
         }
     }
 
