@@ -10,8 +10,6 @@ class Question extends Model
         'question',
         'applicant_answer',
         'difficulty',
-        'expected_keywords',
-        'assessment_criteria',
         'interview_id',
     ];
 

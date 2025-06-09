@@ -20,7 +20,7 @@ class Application extends Model
 
     public function interview(): HasOne
     {
-        return $this->hasOne(Interview::class);
+        return $this->hasOne(Interview::class, 'id');
     }
 
     // public function applicant(): \Illuminate\Database\Eloquent\Relations\BelongsTo

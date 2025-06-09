@@ -65,20 +65,17 @@ Route::get('storage/{filePath}', function ($filePath) {
 
 
 Route::get('test', function () {
+    $job = Job::find(1);
 
-
-    
-    // $job = Job::find(1);
-
+    Application::whereJobId($job->id)->update(['status' => ApplicationStatus::CVEligible]);
     // $questions = Question::where('interview_id', 1)->get();
-    // InterviewPhaseStarted::dispatch($job);
+    InterviewPhaseStarted::dispatch($job);
     // return response()->json($questions);
     
     // Application::whereJobId($job->id)->update([
     //     'status' => ApplicationStatus::Pending,
     //     'cv_score' => null
     // ]);
-    
     // ApplicantApplied::dispatch($job);
 
     return 'HireVerse - HierServe';

@@ -11,6 +11,7 @@ class QuestionsGenerationService
 {
     protected $client;
     protected $apiKey;
+    protected const MODEL_NAME = "meta-llama/llama-4-scout-17b-16e-instruct";
     protected $historyFile;
     protected $questionHistory = [];
 
@@ -58,11 +59,11 @@ class QuestionsGenerationService
                 try {
                     $response = $this->client->post('openai/v1/chat/completions', [
                         'json' => [
-                            "model" => "meta-llama/llama-4-scout-17b-16e-instruct",
+                            "model" => self::MODEL_NAME,
                             "messages" => [
                                 [
                                     "role" => "system",
-                                    "content" => "You generate unique technical questions in valid JSON format. Your primary goal is to create questions that cover new aspects of the skill not addressed in the provided history."
+                                    "content" => "You are an expert technical interviewer creating unique, structured, AI-evaluable interview questions in valid JSON."
                                 ],
                                 [
                                     "role" => "user",
@@ -93,7 +94,8 @@ class QuestionsGenerationService
                                 // 'skill' => $skill,
                                 'question' => $q['question'] ?? 'N/A',
                                 'difficulty' => $q['difficulty'] ?? 'N/A',
-                                'expected_keywords' => implode(', ', $q['keywords'] ?? []),
+                                'expected_keywords' => $q['keywords'] ?? [],
+                                'expected_answer_components' => $q['expected_answer_components'] ?? [],
                                 'assessment_criteria' => $q['assessment_criteria'] ?? 'N/A',
                             ];
 
@@ -130,39 +132,29 @@ class QuestionsGenerationService
     {
         $historyText = $history ? implode("\n", array_map(fn($q) => "- {$q}", $history)) : "- None yet.";
         return <<<PROMPT
-Generate {$remaining} *strictly new* technical interview questions for the skill **{$skill}** (Job Title: **{$jobTitle}**). Questions must be designed for verbal responses with clearly bounded scopes and must not repeat or resemble any previous questions.
+        Generate {$remaining} strictly new, high-quality technical interview questions for a {$jobTitle} focusing on {$skill}.
+        Questions must be designed for verbal responses with objectively verifiable answers.
 
-**PREVIOUSLY ASKED QUESTIONS (DO NOT REPEAT OR PARAPHRASE):**
-{$historyText}
+        PREVIOUSLY GENERATED QUESTIONS (DO NOT REPEAT OR PARAPHRASE):
+        {$historyText}
 
-**QUESTION DESIGN RULES:**
-1. **Clarity**: Questions must be concise and unambiguous.
-2. **Structure**: Answers should be objectively assessable and not open-ended.
-3. **Difficulty**: Assign easy, medium, or hard based on depth of knowledge.
-4. **Novelty**: Cover new subtopics, contexts, or angles not seen before.
+        REQUIREMENTS:
+        - Questions must have objectively correct, verifiable answers.
+        - Provide a list of the essential, concrete, factual components of the correct answer in 'expected_answer_components'. The components should be short sentences that represent the correct answer, not criterion or what the answer should include.
+        - Avoid subjective or open-ended questions (e.g., 'What do you think of...', 'Describe how to...').
 
-**PREFERRED QUESTION TYPES (VERBAL, STRUCTURED):**
-- **Scenario-Based**: 'Given [X constraints], what factors affect your choice in [Y]?'
-- **Comparison**: 'Compare X and Y in the context of Z. When is each preferable?'
-- **Process-Oriented**: 'List and justify the key steps to achieve [specific outcome].'
-- **Diagnosis/Optimization**: 'What signs point to [problem], and how would you resolve it?'
-
-**AVOID:**
-- Generic prompts like 'Describe your approach to...'
-- Open-ended or subjective questions
-- Any reused, reworded, or similar questions from the history above
-
-**OUTPUT FORMAT (STRICT JSON):**
-{
-"questions": [
-    {
-    "question": "[Well-structured, bounded question]",
-    "difficulty": "easy | medium | hard",
-    "keywords": ["concept1", "concept2", "concept3"],
-    "assessment_criteria": "Specific, measurable guidelines for evaluating responses. Include how each keyword will be assessed."
-    }
-]
-}
-PROMPT;
+        OUTPUT (Strict JSON format):
+        {{
+        "questions": [
+            {{
+            "question": "[Concise, verifiable question]",
+            "difficulty": "Easy | Medium | Hard",
+            "keywords": ["concept1", "concept2"],
+            "expected_answer_components": ["component1", "component2", "component3", ...],
+            "assessment_criteria": "[Brief guidelines for evaluation]"
+            }}
+        ]
+        }}
+        PROMPT;
     }
 }

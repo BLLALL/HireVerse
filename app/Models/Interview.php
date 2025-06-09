@@ -3,23 +3,24 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Interview extends Model
 {
+    use SoftDeletes;
+    
     protected $fillable = [
-        'question',
-        'difficulty',
-        'ideal_answer',
-        'applicant_answer',
+        'id',
+        'date',
         'score',
-        'application_id'
     ];
 
-    public function application(): HasOne
+    public function application(): BelongsTo
     {
-        return $this->hasOne(Application::class);
+        return $this->belongsTo(Application::class, 'id');
     }
 
     public function questions(): HasMany
