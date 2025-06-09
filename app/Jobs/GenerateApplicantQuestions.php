@@ -12,6 +12,7 @@ use App\Notifications\InterviewScheduled;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 class GenerateApplicantQuestions implements ShouldQueue
 {
@@ -21,7 +22,7 @@ class GenerateApplicantQuestions implements ShouldQueue
 
     public function handle(QuestionsGenerationService $generator): void
     {
-        $questions = $generator->generateQuestions(job: $this->j, questionsPerSkill: 3);
+        $generatedQuestions = $generator->generateQuestions(job: $this->j, questionsPerSkill: 3);
 
         //  hardcoded questions for testing
         // $questions = [
@@ -67,32 +68,23 @@ class GenerateApplicantQuestions implements ShouldQueue
         // dd($questions);
         // create interview record with the application id
         // insert the generated questions into questions table with the interview id
+        // store questions.json file in S3
+        
+        $interview = $this->application->interview()->create();
 
-        $interview = Interview::Create([
-            'application_id' => $this->application->id,
-            'deadline' => now()->addDays(3), // next 3 days from now
-        ]);
+        $questionsFilePath = "interviews/{$interview->id}/questions.json";
+        Storage::put($questionsFilePath, json_encode($generatedQuestions, JSON_PRETTY_PRINT));
 
-        $this->application->status = ApplicationStatus::InterviewScheduled;
-        $this->application->save();
-        $questions = array_map(function ($question) use ($interview) {
-            $question['interview_id'] = $interview->id;
-
-            return $question;
-        }, $questions);
+        $questions = array_map(function ($q) use ($interview) {
+            return [
+                'interview_id' => $interview->id,
+                'question' => $q['question'],
+                'difficulty' => $q['difficulty'],
+            ];
+        }, $generatedQuestions);
 
         Question::insert($questions);
 
-        $this->NotifyUsers($this->j, $interview);
-
-    }
-
-    private function NotifyUsers(Job $job, $interview)
-    {
-
-        $applicant = $this->application->applicant;
-        $applicant->notify(new InterviewScheduled($interview));
-        Log::info("Interview scheduled notification sent to applicant: {$applicant->id} for job: {$job->id}");
-
+        Log::info("Generated ". count($questions) . " questions for applicant ". $this->application->applicant_id);
     }
 }
