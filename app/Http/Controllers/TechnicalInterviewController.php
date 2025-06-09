@@ -18,28 +18,25 @@ class TechnicalInterviewController extends Controller
         return response()->json($questions);
     }
     
-    public function update(Request $request)
+    public function update(Request $request, Question $question)
     {
        $validator = Validator::make($request->all(), [
-            'applicant_answer' => 'required|file|mimes:mp3,ogg,wav/max:50000', // 50MB max size
+            'applicant_answer' => 'required|file|mimes:mp4,avi,mov,wmv,flv,webm|max:102400', // 100MB max
         ]);
         if ($validator->fails()) {
             return response()->json([
                 'error' => $validator->errors(),
             ]);
         }
-        if ($request->hasFile(('applicant_answer')))
-        {
-            $file = $request->file('applicant_answer')->store('applicant_answers', 'public');
 
-            Question::update([
+            $file = $request->file('applicant_answer')->store('applicant_answers', 'public');
+            
+            $question->update([
                 'applicant_answer' => $file,
             ]);
             
             return response()->json([
                 'message' => 'Applicant answer uploaded successfully',
             ]);
-
-        }
     }
 }
