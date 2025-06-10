@@ -26,6 +26,7 @@ class ApplicantProfileController extends Controller
             }
             
             $cvFile = $request->file('cv');
+            
             $attributes['cv'] = $cvFile->storeAs('applicants/cvs', $this->generateUniqueName($cvFile));
         }
 

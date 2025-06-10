@@ -14,6 +14,7 @@ class Interview extends Model
         'ideal_answer',
         'applicant_answer',
         'score',
+        'deadline',
         'application_id'
     ];
 

@@ -65,8 +65,6 @@ class CompanyJobsController extends Controller
 
         InterviewPhaseStarted::dispatch($job);
         
-        $this->NotifyUsers($job);
-
         return $this->ok('Interview phase has started.');
     }
 
@@ -77,14 +75,15 @@ class CompanyJobsController extends Controller
         }
     }
 
-    private function NotifyUsers($job)
+    private function NotifyUsers($job, $interviewDate)
     {
        // Get all applicants who are eligible for the interview
         $applicants = $job->applicants()
             ->wherePivot('status', ApplicationStatus::CVEligible)
             ->get();
         foreach($applicants as $applicant) {
-            event(new InterviewSheduled($applicant->id));
+            \Log::info("Notifying applicant: {$applicant->email} for job: {$job->title}");
+            event(new InterviewSheduled($applicant->id, $interviewDate));
         }
     }
 

@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Interview;
 use App\Models\Question;
+use App\Models\Interview;
 use App\Traits\ApiResponses;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Validator;
 
 class TechnicalInterviewController extends Controller
@@ -13,6 +14,12 @@ class TechnicalInterviewController extends Controller
     use ApiResponses;
 
     public function index(Interview $interview) {
+        
+        if(Carbon::now()->greaterThan($interview->deadline)) {
+            return $this->error('Interview deadline has passed', 400);
+        }
+
+
         $questions = Question::where('interview_id', $interview->id)->get(['id', 'question', 'difficulty', 'expected_keywords', 'assessment_criteria', 'interview_id']);
 
         return response()->json($questions);

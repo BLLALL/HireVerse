@@ -1,18 +1,14 @@
 <?php
 
-use App\Models\Job;
-use App\Models\Application;
-use App\Events\InterviewPhaseStarted;
+
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
-use App\Jobs\GenerateApplicantQuestions;
 use App\Http\Controllers\OAuthController;
 use App\Http\Controllers\ApplicantJobsController;
 use App\Http\Controllers\ApplicantProfileController;
 use App\Http\Controllers\TechnicalInterviewController;
 
 Route::middleware(['auth:sanctum', 'ability:*', 'verified', 'can:applicant'])->group(function () {
-    Broadcast::routes();
 
     Route::get('user', function () {
         return response()->json(auth()->user());

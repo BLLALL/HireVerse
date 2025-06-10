@@ -20,6 +20,7 @@ class InterviewSheduled implements ShouldBroadcast
      */
     public function __construct(
         public int $applicantId, 
+        public $deadline,
         ){}
  
 
@@ -41,10 +42,12 @@ class InterviewSheduled implements ShouldBroadcast
     }
     public function broadcastWith(): array
     {
+
         return [
+
             'message' => 'Your interview has been scheduled.',
             'applicant_id' => $this->applicantId,
-            // 'date' => $this->date,
+            'deadline' => $this->deadline->diffForHumans(),
         ];
     }
 

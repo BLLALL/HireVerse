@@ -14,10 +14,10 @@ return new class extends Migration {
         Schema::create('interviews', function (Blueprint $table) {
             $table->id();
             $table->integer('score')->default(0);
-            $table->dateTime('date')->nullable();
+            $table->dateTime('deadline')->nullable();
             $table->text('feedback')->nullable();
             $table->text('resources')->nullable();
-            $table->foreignId('application_id')->nullable()->constrained('applications');
+            $table->foreignId('application_id')->nullable()->constrained('applications')->onDelete('cascade');
             $table->timestamps();
             $table->softDeletes();  
         });
