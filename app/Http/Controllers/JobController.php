@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\AIServices\Recommendation;
+use App\AIServices\RecommendationService;
 use App\Http\Requests\StoreJobRequest;
 use App\Http\Resources\JobResource;
 use App\Models\Application;
@@ -21,7 +21,7 @@ class JobController extends Controller
 {
     use ApiResponses;
 
-    public function index(Recommendation $recommendation): mixed
+    public function index(RecommendationService $recommendation): mixed
     {
         $key = "recommended_for_applicant_" . Auth::id();
         
