@@ -7,6 +7,7 @@ use App\Models\Interview;
 use App\Traits\ApiResponses;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use App\Enums\ApplicationStatus;
 use Illuminate\Support\Facades\Validator;
 
 class TechnicalInterviewController extends Controller
@@ -15,13 +16,18 @@ class TechnicalInterviewController extends Controller
 
     public function index(Interview $interview) {
         
+        if(!$interview) {
+            return $this->error('Interview not found', 404);
+        }
+
         if(Carbon::now()->greaterThan($interview->deadline)) {
             return $this->error('Interview deadline has passed', 400);
         }
 
 
         $questions = Question::where('interview_id', $interview->id)->get(['id', 'question', 'difficulty', 'expected_keywords', 'assessment_criteria', 'interview_id']);
-
+        
+        $interview->application->status = ApplicationStatus::Interviewed;
         return response()->json($questions);
     }
     

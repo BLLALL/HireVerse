@@ -77,7 +77,8 @@ class GenerateApplicantQuestions implements ShouldQueue
             'application_id' => $this->application->id,
             'deadline' =>  now()->addDays(3), // next 3 days from now
         ]);
-       
+
+        $interview->application->status = ApplicationStatus::InterviewScheduled;
 
         $questions = array_map(function ($question) use ($interview) {
             $question['interview_id'] = $interview->id;
