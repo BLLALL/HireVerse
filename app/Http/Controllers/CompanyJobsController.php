@@ -75,11 +75,13 @@ class CompanyJobsController extends Controller
 
         $interviewedApplicants = DB::table('applicants')
             ->select(
+                'applicants.id as applicant_id',
                 'applicants.first_name',
                 'applicants.last_name',
                 'applicants.email',
                 'jobs.title as job_title',
-                'interviews.score'   
+                'interviews.id as interview_id',
+                'interviews.score as technical_score',   
             )
             ->join('applications', 'applicants.id', '=', 'applications.applicant_id')
             ->join('jobs', 'applications.job_id', '=', 'jobs.id')

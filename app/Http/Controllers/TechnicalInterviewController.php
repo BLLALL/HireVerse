@@ -27,7 +27,6 @@ class TechnicalInterviewController extends Controller
 
         $questions = Question::where('interview_id', $interview->id)->get(['id', 'question', 'difficulty', 'expected_keywords', 'assessment_criteria', 'interview_id']);
         
-        $interview->application->status = ApplicationStatus::Interviewed;
         return response()->json($questions);
     }
     
@@ -47,6 +46,9 @@ class TechnicalInterviewController extends Controller
             $question->update([
                 'applicant_answer' => $file,
             ]);
+            
+            $question->interview->application->status = ApplicationStatus::Interviewed;
+            $question->interview->application->save();
             
             return response()->json([
                 'message' => 'Applicant answer uploaded successfully',

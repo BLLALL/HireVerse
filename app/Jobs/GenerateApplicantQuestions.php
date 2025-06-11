@@ -69,18 +69,16 @@ class GenerateApplicantQuestions implements ShouldQueue
 
         // dd($questions);
         // create interview record with the application id
-        Log::info('About to create interview for application: ' . $this->application->id);
         // insert the generated questions into questions table with the interview id
-        DB::enableQueryLog(); // Start logging queries
         
         $interview = Interview::firstOrCreate([
             'application_id' => $this->application->id,
             'deadline' =>  now()->addDays(3), // next 3 days from now
         ]);
 
-        $interview->application->status = ApplicationStatus::InterviewScheduled;
-
-        $questions = array_map(function ($question) use ($interview) {
+        $this->application->status = ApplicationStatus::InterviewScheduled;
+        $this->application->save();
+            $questions = array_map(function ($question) use ($interview) {
             $question['interview_id'] = $interview->id;
             return $question;
         }, $questions);

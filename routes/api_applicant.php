@@ -20,6 +20,7 @@ Route::middleware(['auth:sanctum', 'ability:*', 'verified', 'can:applicant'])->g
         Route::post('jobs/{job}/applications', [ApplicantJobsController::class, 'store']);
         Route::patch('profile', [ApplicantProfileController::class, 'update']);
         Route::patch('password', [ApplicantProfileController::class, 'changePassword']);
+        Route::get('upcoming-interviews', [ApplicantJobsController::class, 'getUpcomingInterviews']);
     });
 
     Route::get('interviews/{interview}/questions', [TechnicalInterviewController::class, 'index']);
