@@ -15,9 +15,12 @@ class Interview extends Model
         'applicant_answer',
         'score',
         'deadline',
-        'application_id'
+        'application_id',
     ];
 
+    protected $casts = [
+        'deadline' => 'datetime',
+    ];
     public function application(): HasOne
     {
         return $this->hasOne(Application::class);

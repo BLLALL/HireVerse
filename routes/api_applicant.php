@@ -1,19 +1,18 @@
 <?php
 
-
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\AuthController;
-use App\Http\Controllers\OAuthController;
 use App\Http\Controllers\ApplicantJobsController;
 use App\Http\Controllers\ApplicantProfileController;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\OAuthController;
 use App\Http\Controllers\TechnicalInterviewController;
+use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth:sanctum', 'ability:*', 'verified', 'can:applicant'])->group(function () {
 
     Route::get('user', function () {
         return response()->json(auth()->user());
     });
-    
+
     Route::prefix('applicant')->group(function () {
         Route::delete('/', [ApplicantProfileController::class, 'deleteAccount']);
         Route::get('jobs', [ApplicantJobsController::class, 'index']);
@@ -43,5 +42,4 @@ Route::middleware('api_guest')->group(function () {
         Route::post('login', 'login');
     });
 
-    
 });

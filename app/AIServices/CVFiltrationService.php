@@ -11,12 +11,12 @@ use Exception;
 use GuzzleHttp\Client;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
 class CVFiltrationService
 {
     protected $requestData = [];
+
     protected $job;
 
     public function __construct(protected Collection $applications)
@@ -31,7 +31,7 @@ class CVFiltrationService
             }
 
             $this->requestData[] = [
-                'name'     => 'cvFiles',
+                'name' => 'cvFiles',
                 'contents' => fopen(Storage::path($application->cv), 'r'),
                 'filename' => $fileName,
             ];
@@ -40,7 +40,7 @@ class CVFiltrationService
         $this->job = Job::find($this->applications[0]->job_id);
 
         $this->requestData[] = [
-            'name'     => 'jobDescription',
+            'name' => 'jobDescription',
             'contents' => JobResource::make($this->job)->toJson(),
         ];
     }
@@ -50,7 +50,7 @@ class CVFiltrationService
         try {
             DB::beginTransaction();
 
-            $response = app(Client::class)->post(config('app.ai_services_url') . '/cv-filtration', [
+            $response = app(Client::class)->post(config('app.ai_services_url').'/cv-filtration', [
                 'multipart' => $this->requestData,
             ]);
 

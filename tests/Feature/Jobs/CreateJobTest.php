@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-use App\Models\Job;
-use App\Models\Company;
 use App\Models\Applicant;
+use App\Models\Company;
+use App\Models\Job;
 use App\Traits\TokenHelpers;
 use Laravel\Sanctum\Sanctum;
 
@@ -14,7 +14,6 @@ beforeEach(function () {
     $this->company = Company::factory()->create();
     $this->applicant = Applicant::factory()->create();
     $this->token = Sanctum::actingAs($this->company);
-
 
     $this->validJob = [
         'title' => 'LLM Machine Learning Engineer',
@@ -75,7 +74,7 @@ it('validates field types and constraints', function () {
 });
 
 it('creates a job successfully', function () {
-    
+
     $response = $this->postJson('api/jobs', $this->validJob, [
         'Authorization' => 'Bearer '.$this->token,
         'Accept' => 'application/json',

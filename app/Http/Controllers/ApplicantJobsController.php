@@ -2,20 +2,20 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Job;
-use App\Models\Application;
-use App\Traits\FileHelpers;
-use App\Traits\ApiResponses;
-use Illuminate\Http\Request;
 use App\Enums\ApplicationStatus;
 use App\Events\ApplicantApplied;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Pipeline;
-use App\Http\Resources\ApplicantJobResource;
-use App\Pipelines\Filters\JobFilters\Search;
 use App\Http\Requests\StoreJobApplicationRequest;
+use App\Http\Resources\ApplicantJobResource;
+use App\Models\Application;
+use App\Models\Job;
 use App\Pipelines\Filters\ApplicationFilters\Status;
+use App\Pipelines\Filters\JobFilters\Search;
+use App\Traits\ApiResponses;
+use App\Traits\FileHelpers;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Pipeline;
 
 class ApplicantJobsController extends Controller
 {
@@ -81,7 +81,7 @@ class ApplicantJobsController extends Controller
                 'interviews.deadline',
                 'jobs.title as job_title',
                 'companies.name as company_name',
-                
+
             )
             ->join('applications', 'interviews.application_id', '=', 'applications.id')
             ->join('jobs', 'applications.job_id', '=', 'jobs.id')
@@ -92,8 +92,8 @@ class ApplicantJobsController extends Controller
             ->orderBy('interviews.deadline', 'asc')
             ->get();
 
-            return response()->json([
-                'upcoming_interviews' => $upcomingInterviews,
-            ]);
+        return response()->json([
+            'upcoming_interviews' => $upcomingInterviews,
+        ]);
     }
 }

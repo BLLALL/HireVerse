@@ -2,18 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Company;
-use App\Traits\FileHelpers;
-use App\Traits\ApiResponses;
-use App\Http\Resources\CompanyResource;
-use Illuminate\Support\Facades\Storage;
-use App\Http\Requests\UpdateCompanyRequest;
 use App\Http\Requests\UpdateApplicantPasswordRequest;
-use Illuminate\Support\Facades\Auth;
+use App\Http\Requests\UpdateCompanyRequest;
+use App\Http\Resources\CompanyResource;
+use App\Models\Company;
+use App\Traits\ApiResponses;
+use App\Traits\FileHelpers;
+use Illuminate\Support\Facades\Storage;
 
 class CompanyController extends Controller
 {
-    use FileHelpers, ApiResponses;
+    use ApiResponses, FileHelpers;
+
     public function index(): mixed
     {
         return CompanyResource::collection(Company::latest()->get());
@@ -28,35 +28,35 @@ class CompanyController extends Controller
     {
         $attributes = $request->validated();
         $company = $request->user();
-        
+
         if ($request->hasFile('logo')) {
             if ($company->logo) {
                 Storage::delete($company->logo);
             }
             $logoFile = $request->file('logo');
-            $attributes['logo'] = $logoFile->storeAs('companies/logos', 
-            $this->generateUniqueName($logoFile));
+            $attributes['logo'] = $logoFile->storeAs('companies/logos',
+                $this->generateUniqueName($logoFile));
 
         }
-        
+
         $company->update($attributes);
+
         return response()->json([
             'message' => 'Company updated successfully',
-            'data' => new CompanyResource($company->fresh())
+            'data' => new CompanyResource($company->fresh()),
         ]);
     }
-
 
     public function changePassword(UpdateApplicantPasswordRequest $request)
     {
         $token = $request->user()->currentAccessToken();
         dd([
             'token_name' => $token->name,
-            'token_provider' => get_class($request->user())
+            'token_provider' => get_class($request->user()),
         ]);
-        
+
         $company = $request->user();
-        $company->password =    $request->password;
+        $company->password = $request->password;
         $company->save();
         $company->currentAccessToken()->delete();
 
@@ -66,6 +66,7 @@ class CompanyController extends Controller
     public function destroy(Company $company): mixed
     {
         $company->delete();
+
         return response()->json(['message' => 'Company deleted successfully']);
     }
 }

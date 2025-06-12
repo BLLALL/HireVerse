@@ -15,7 +15,7 @@ class InterviewScheduled extends Notification implements ShouldQueue
     /**
      * Create a new notification instance.
      */
-    public function __construct(public $deadline)
+    public function __construct(public $interview)
     {
         //
     }
@@ -36,9 +36,9 @@ class InterviewScheduled extends Notification implements ShouldQueue
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-                    ->line('The introduction to the notification.')
-                    ->action('Notification Action', url('/'))
-                    ->line('Thank you for using our application!');
+            ->line('The introduction to the notification.')
+            ->action('Notification Action', url('/'))
+            ->line('Thank you for using our application!');
     }
 
     /**
@@ -50,7 +50,8 @@ class InterviewScheduled extends Notification implements ShouldQueue
     {
         return [
             'message' => 'Your interview has been scheduled.',
-            'deadline' => $this->deadline->diffForHumans(),
+            'deadline' => $this->interview->deadline->toIso8601String(),  
+            'interview_id' => $this->interview->id, 
         ];
     }
 
@@ -58,7 +59,8 @@ class InterviewScheduled extends Notification implements ShouldQueue
     {
         return new BroadcastMessage([
             'message' => 'Your interview has been scheduled.',
-            'deadline' => $this->deadline->diffForHumans(),
+            'deadline' => $this->interview->deadline->toIso8601String(),  
+            'interview_id' => $this->interview->id, 
         ]);
     }
 }

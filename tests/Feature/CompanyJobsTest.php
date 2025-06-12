@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
+use App\Enums\ApplicationStatus;
+use App\Models\Applicant;
 use App\Models\Company;
 use App\Models\Job;
-use App\Models\Applicant;
-use App\Enums\ApplicationStatus;
 use Laravel\Sanctum\Sanctum;
 
 beforeEach(function () {
@@ -27,7 +27,7 @@ it('returns company jobs with statistics', function () {
 
     // Create some applications
     $applicants = Applicant::factory(4)->create();
-    
+
     // Add applications with specific dates for testing monthly changes
     $currentJobs->each(function ($job) use ($applicants) {
         $applicants->random(2)->each(function ($applicant) use ($job) {
@@ -72,13 +72,13 @@ it('returns company jobs with statistics', function () {
                         'jobLocation',
                         'jobType',
                         'duration',
-                    ]
-                ]
-            ]
+                    ],
+                ],
+            ],
         ]);
 
     $stats = $response->json('stats');
-    
+
     // We created:
     // - 8 total jobs (5 current month + 3 last month)
     // - 10 accepted applications (2 applicants * 5 current jobs)
@@ -100,13 +100,13 @@ it('returns unauthorized for non-authenticated companies', function () {
 it('only returns jobs belonging to authenticated company', function () {
     // Create jobs for authenticated company
     Job::factory(3)->create([
-        'company_id' => $this->company->id
+        'company_id' => $this->company->id,
     ]);
 
     // Create jobs for another company
     $otherCompany = Company::factory()->create();
     Job::factory(2)->create([
-        'company_id' => $otherCompany->id
+        'company_id' => $otherCompany->id,
     ]);
 
     $response = $this->getJson('/api/company/jobs')

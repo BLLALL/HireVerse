@@ -23,11 +23,11 @@ class JobController extends Controller
 
     public function index(RecommendationService $recommendation): mixed
     {
-        $key = "recommended_for_applicant_" . Auth::id();
-        
+        $key = 'recommended_for_applicant_'.Auth::id();
+
         $recommendedJobs = [];
         $recommendedJobsIds = Cache::get($key, []);
-        
+
         if (empty($recommendedJobsIds) && Auth::id()) {
             $recommendedJobsIds = $recommendation->handle();
 
@@ -37,7 +37,7 @@ class JobController extends Controller
         }
 
         $recommendedJobs = Job::with('company')->whereIn('id', $recommendedJobsIds)->get();
-        
+
         $jobs = Job::available()->with('company')->whereNotIn('id', $recommendedJobsIds)->filter([
             Location::class,
             Search::class,
@@ -46,10 +46,10 @@ class JobController extends Controller
             RangeSalary::class,
             WorkingHours::class,
         ]);
-        
+
         return [
-            'recommendedJobs' => JobResource::collection($recommendedJobs), 
-            'jobs' => JobResource::collection($jobs->latest()->paginate(10))
+            'recommendedJobs' => JobResource::collection($recommendedJobs),
+            'jobs' => JobResource::collection($jobs->latest()->paginate(10)),
         ];
     }
 
@@ -58,7 +58,7 @@ class JobController extends Controller
         $applicantApplied = Application::whereApplicantId(auth()->id())->whereJobId($job->id)->exists();
 
         return JobResource::make($job)->additional([
-            'applicantApplied' => $applicantApplied
+            'applicantApplied' => $applicantApplied,
         ]);
     }
 
@@ -75,7 +75,6 @@ class JobController extends Controller
             'message' => 'Job created successfully',
         ]);
     }
-
 
     private function getAuthenticatedCompany($request): ?\App\Models\Company
     {
@@ -99,6 +98,7 @@ class JobController extends Controller
     public function destroy(Job $job): mixed
     {
         $job->delete();
+
         return response()->json(['message' => 'Job deleted successfully']);
     }
 }

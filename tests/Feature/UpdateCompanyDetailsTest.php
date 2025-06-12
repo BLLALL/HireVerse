@@ -1,7 +1,9 @@
 <?php
-//UpdateCompanyDetailsTest
+
+// UpdateCompanyDetailsTest
 use App\Models\Company;
 use Laravel\Sanctum\Sanctum;
+
 use function Pest\Laravel\patchJson;
 
 beforeEach(function () {
@@ -39,7 +41,7 @@ it('updates company details successfully', function () {
     $response->assertStatus(200)
         ->assertJson([
             'message' => 'Company details updated successfully',
-            'data' => $updatedData
+            'data' => $updatedData,
         ]);
 
     $this->assertDatabaseHas('companies', [
@@ -64,7 +66,7 @@ it('prevents updating email through this endpoint', function () {
     $response = patchJson("/api/company/{$this->company->id}", $updatedData);
 
     $response->assertStatus(200);
-    
+
     // Check that name was updated but email wasn't
     $this->assertDatabaseHas('companies', [
         'id' => $this->company->id,
@@ -86,16 +88,16 @@ it('validates required fields', function () {
 it('prevents unauthorized companies from updating others', function () {
     // Create another company
     $anotherCompany = Company::factory()->create();
-    
+
     // Authenticate as this other company
     Sanctum::actingAs($anotherCompany, ['*'], 'companies');
-    
+
     $response = patchJson("/api/company/{$this->company->id}", [
         'name' => 'Unauthorized Update',
     ]);
 
     $response->assertStatus(403);
-    
+
     // Ensure data wasn't changed
     $this->assertDatabaseHas('companies', [
         'id' => $this->company->id,
@@ -106,7 +108,7 @@ it('prevents unauthorized companies from updating others', function () {
 it('requires authentication', function () {
     // No authentication
     auth()->guard('sanctum')->logout();
-    
+
     $response = patchJson("/api/company/{$this->company->id}", [
         'name' => 'Unauthenticated Update',
     ]);
@@ -138,7 +140,7 @@ it('allows partial updates', function () {
     ]);
 
     $response->assertStatus(200);
-    
+
     $this->assertDatabaseHas('companies', [
         'id' => $this->company->id,
         'name' => 'Only Name Updated',
@@ -149,7 +151,7 @@ it('allows partial updates', function () {
 
 it('handles non-existent company gracefully', function () {
     $nonExistentId = Company::max('id') + 1;
-    
+
     $response = patchJson("/api/company/{$nonExistentId}", [
         'name' => 'Updated Name',
     ]);

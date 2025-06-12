@@ -2,20 +2,20 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Job;
-use App\Enums\JobPhase;
-use App\Models\Application;
-use App\Traits\ApiResponses;
-use Illuminate\Http\Request;
 use App\Enums\ApplicationStatus;
-use Illuminate\Support\Facades\DB;
+use App\Enums\JobPhase;
 use App\Events\InterviewPhaseStarted;
-use Illuminate\Support\Facades\Pipeline;
+use App\Http\Resources\CompanyJobApplicationResource;
 use App\Http\Resources\CompanyJobsResource;
 use App\Http\Resources\CompanyStatsResource;
-use Illuminate\Auth\Access\AuthorizationException;
-use App\Http\Resources\CompanyJobApplicationResource;
+use App\Models\Application;
+use App\Models\Job;
 use App\Pipelines\Filters\JobFilters\SearchApplicants;
+use App\Traits\ApiResponses;
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Pipeline;
 
 class CompanyJobsController extends Controller
 {
@@ -32,7 +32,7 @@ class CompanyJobsController extends Controller
                     ->with('company')
                     ->latest()
                     ->get()
-            )
+            ),
         ];
     }
 
@@ -44,7 +44,7 @@ class CompanyJobsController extends Controller
         $applicants = Pipeline::send($query)->through(SearchApplicants::class)->thenReturn()->paginate(10);
 
         return CompanyJobApplicationResource::collection($applicants)->additional([
-            'jobPhase' =>  $job->phase,
+            'jobPhase' => $job->phase,
         ]);
     }
 
@@ -64,7 +64,7 @@ class CompanyJobsController extends Controller
         $job->update(['phase' => JobPhase::Interview]);
 
         InterviewPhaseStarted::dispatch($job);
-        
+
         return $this->ok('Interview phase has started.');
     }
 
@@ -80,7 +80,7 @@ class CompanyJobsController extends Controller
                 'applicants.email',
                 'jobs.title as job_title',
                 'interviews.id as interview_id',
-                'interviews.score as technical_score',   
+                'interviews.score as technical_score',
             )
             ->join('applications', 'applicants.id', '=', 'applications.applicant_id')
             ->join('jobs', 'applications.job_id', '=', 'jobs.id')
@@ -89,8 +89,9 @@ class CompanyJobsController extends Controller
             ->where('interviews.score', '!=', 0)
             ->get();
 
-          return response()->json($interviewedApplicants);
+        return response()->json($interviewedApplicants);
     }
+
     public function authorize(Job $job)
     {
         if ($job->company_id != auth()->id()) {
