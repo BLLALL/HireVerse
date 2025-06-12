@@ -1,20 +1,27 @@
 <?php
 
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Broadcast;
 
 
-Broadcast::channel('App.Models.User.{id}', function ($user, $id) {
-    return (int) $user->id === (int) $id;
-});
-
-//public channels
-Broadcast::channel('applicant', function ($user) {
-    \Log::info('Channel auth debug', [
-        'user_id' => $user->id,
-        'user_id_type' => gettype($user->id),
-    ]);
+Broadcast::channel('App.Models.Applicant.{applicantId}', function ($user, $applicantId) {
+    // --- Temporary Debugging Logs ---
+    Log::info('--- Broadcasting Auth Check ---');
+    Log::info('Attempting to authorize for applicantId: ' . $applicantId);
     
-    return true; // Allow all authenticated users to join this channel
+    if ($user) {
+        Log::info('Authenticated User ID: ' . $user->id);
+        $is_authorized = (int) $user->id === (int) $applicantId;
+        Log::info('Authorization result: ' . ($is_authorized ? 'SUCCESS' : 'FAILED'));
+    } else {
+        Log::warning('Authorization FAILED: No user is authenticated for this request.');
+        $is_authorized = false;
+    }
+    
+    Log::info('-----------------------------');
+    // --- End of Debugging Logs ---
+
+    return $is_authorized;
 });
 
 Broadcast::channel('applicant.{applicantId}', function ($user, $applicantId) {

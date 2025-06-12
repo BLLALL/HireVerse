@@ -2,9 +2,10 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Application extends Model
 {
@@ -17,6 +18,11 @@ class Application extends Model
         'applicant_id',
         'job_id',
     ];
+
+     public function applicant(): BelongsTo
+    {
+        return $this->belongsTo(Applicant::class);
+    }
 
     public function interview(): HasOne
     {

@@ -8,7 +8,6 @@ use App\Models\Application;
 use App\Traits\ApiResponses;
 use Illuminate\Http\Request;
 use App\Enums\ApplicationStatus;
-use App\Events\InterviewSheduled;
 use Illuminate\Support\Facades\DB;
 use App\Events\InterviewPhaseStarted;
 use Illuminate\Support\Facades\Pipeline;

@@ -2,18 +2,54 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\UpdateApplicantPasswordRequest;
-use App\Http\Requests\UpdateApplicantProfileRequest;
-use App\Http\Resources\ApplicantResource;
 use App\Models\Applicant;
-use App\Traits\ApiResponses;
 use App\Traits\FileHelpers;
+use App\Traits\ApiResponses;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use App\Http\Resources\ApplicantResource;
+use Illuminate\Notifications\DatabaseNotification;
+use App\Http\Requests\UpdateApplicantProfileRequest;
+use App\Http\Requests\UpdateApplicantPasswordRequest;
 
 class ApplicantProfileController extends Controller
 {
     use ApiResponses, FileHelpers;
+
+
+    public function notifications()
+{
+    $applicant = Auth::user();
+   
+    return response()->json([
+        'read' => $applicant->readNotifications->map(fn($n) => [
+            'id' => $n->id,
+            'message' => $n->data['message'] ?? '',
+            'deadline' => $n->data['deadline'] ?? null,
+            'created_at' => $n->created_at,
+            'read_at' => $n->read_at,
+        ]),
+        'unread' => $applicant->unreadNotifications->map(fn($n) => [
+            'id' => $n->id,
+            'message' => $n->data['message'] ?? '',
+            'deadline' => $n->data['deadline'] ?? null,
+            'created_at' => $n->created_at,
+        ]),
+        // 'all' => $applicant->notifications->map(fn($n) => [
+        //     'id' => $n->id,
+        //     'message' => $n->data['message'] ?? '',
+        //     'deadline' => $n->data['deadline'] ?? null,
+        //     'created_at' => $n->created_at,
+        //     'read_at' => $n->read_at,
+        // ]),
+    ]);
+}
+
+    public function markAsRead(DatabaseNotification $notification)
+    {
+        $notification->markAsRead();        
+        return response()->noContent();
+    }
 
     public function update(UpdateApplicantProfileRequest $request)
     {

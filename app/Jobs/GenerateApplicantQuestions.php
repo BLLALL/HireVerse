@@ -7,10 +7,8 @@ use App\Models\Question;
 use App\Models\Interview;
 use App\Models\Application;
 use App\Enums\ApplicationStatus;
-use App\Enums\QuestionDifficulty;
-use App\Events\InterviewSheduled;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use App\Notifications\InterviewScheduled;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use App\AIServices\QuestionsGenerationService;
@@ -91,13 +89,10 @@ class GenerateApplicantQuestions implements ShouldQueue
 
     private function NotifyUsers(Job $job, $interviewDeadline)
     {
-       // Get all applicants who are eligible for the interview
-        $applicants = $job->applicants()
-            ->wherePivot('status', ApplicationStatus::CVEligible)
-            ->get();
-        foreach($applicants as $applicant) {
-            \Log::info("Notifying applicant: {$applicant->email} for job: {$job->title}");
-            event(new InterviewSheduled($applicant->id, $interviewDeadline));
-        }
+
+            $applicant = $this->application->applicant;
+            $applicant->notify(new InterviewScheduled( $interviewDeadline));
+            Log::info("Interview scheduled notification sent to applicant: {$applicant->id} for job: {$job->id}");
+        
     }
 }

@@ -21,8 +21,6 @@ use App\Models\Question;
 require_once __DIR__ . '/api_applicant.php';
 require_once __DIR__ . '/api_company.php';
 
-Broadcast::routes();
-
 
 
 Route::post('/github-webhook', function (\Illuminate\Http\Request $request) {

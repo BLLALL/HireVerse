@@ -26,6 +26,9 @@ Route::middleware(['auth:sanctum', 'ability:*', 'verified', 'can:applicant'])->g
     Route::get('interviews/{interview}/questions', [TechnicalInterviewController::class, 'index']);
     Route::patch('questions/{questions}/answer', [TechnicalInterviewController::class, 'update']);
 
+    Route::get('notifications', [ApplicantProfileController::class, 'notifications']);
+    Route::patch('notifications/{notification}/read', [ApplicantProfileController::class, 'markAsRead']);
+
     Route::post('logout', [AuthController::class, 'logout']);
 });
 
