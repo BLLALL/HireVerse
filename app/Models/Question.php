@@ -9,6 +9,7 @@ class Question extends Model
     protected $fillable = [
         'question',
         'applicant_answer',
+        'applicant_score',
         'difficulty',
         'interview_id',
     ];

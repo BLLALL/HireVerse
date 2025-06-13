@@ -9,7 +9,7 @@ use App\Jobs\GenerateApplicantQuestions;
 use App\Http\Controllers\OAuthController;
 use App\Http\Controllers\ApplicantJobsController;
 use App\Http\Controllers\ApplicantProfileController;
-use App\Http\Controllers\TechnicalInterviewController;
+use App\Http\Controllers\InterviewController;
 
 Route::middleware(['auth:sanctum', 'ability:*', 'verified', 'can:applicant'])->group(function () {
     Broadcast::routes();
@@ -26,8 +26,8 @@ Route::middleware(['auth:sanctum', 'ability:*', 'verified', 'can:applicant'])->g
         Route::patch('password', [ApplicantProfileController::class, 'changePassword']);
     });
 
-    Route::get('interviews/{interview}/questions', [TechnicalInterviewController::class, 'index']);
-    Route::patch('questions/{questions}/answer', [TechnicalInterviewController::class, 'update']);
+    Route::get('interviews/{interview}/questions', [InterviewController::class, 'index']);
+    Route::patch('questions/{question}/answer', [InterviewController::class, 'submitAnswer']);
 
     Route::post('logout', [AuthController::class, 'logout']);
 });

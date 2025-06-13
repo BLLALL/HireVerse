@@ -3,6 +3,7 @@
 namespace App\Classes;
 
 use App\Traits\ApiResponses;
+use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -15,6 +16,7 @@ use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Exception\RouteNotFoundException;
 
+
 class ExceptionHandler
 {
     use ApiResponses;
@@ -24,7 +26,7 @@ class ExceptionHandler
         if (! $request->is('api/*')) {
             return false;
         }
-
+        
         return match (true) {
             $exception instanceof ValidationException => $this->error($exception->errors(), 422),
 
@@ -32,11 +34,11 @@ class ExceptionHandler
 
             $exception instanceof AuthorizationException => $this->error('Unauthorized', 403),
 
+            $exception instanceof NotFoundHttpException, 
             $exception instanceof ModelNotFoundException => $this->error('Resource not found', 404),
-
+                        
             $exception instanceof HttpException => $this->error($exception->getMessage(), 403),
-
-            $exception instanceof NotFoundHttpException,
+            
             $exception instanceof RouteNotFoundException => $this->error('Route not found', 404),
 
             $exception instanceof MethodNotAllowedHttpException => $this->error(
@@ -48,9 +50,8 @@ class ExceptionHandler
                 405
             ),
 
-            // $exception instanceof QueryException => $this->handleQueryException($exception),
+            default => $this->handleServerError($exception)
 
-            default => config('app.debug') ? false : $this->error('Server error', 500)
         };
     }
 
@@ -59,5 +60,23 @@ class ExceptionHandler
         Log::error($exception->getMessage());
 
         return $this->error('Database error occurred', 500);
+    }
+
+    private function handleServerError(Exception $exception) {
+        if (config('app.debug') === false) {
+            return $this->error('Server Error', 500);
+        }
+
+        $trace = $exception->getTrace();
+        $rootAppFile = collect($trace)->first(function ($frame) {
+            return isset($frame['file']) && !str_contains($frame['file'], '/vendor/');
+        });
+
+        return response()->json([
+            'message' =>  $exception->getMessage(),
+            'file' => $rootAppFile['file'] ?? $exception->getFile(),
+            'line' => $rootAppFile['line'] ?? $exception->getLine(),
+        ], 500);
+
     }
 }
