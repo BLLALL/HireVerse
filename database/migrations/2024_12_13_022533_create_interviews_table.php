@@ -14,8 +14,9 @@ return new class extends Migration
         Schema::create('interviews', function (Blueprint $table) {
             $table->unsignedBigInteger('id')->primary();
             $table->foreign('id')->references('id')->on('applications')->cascadeOnDelete();
-            $table->integer('score')->nullable();
-            $table->dateTime('date')->nullable();
+            $table->float('technical_skills_score')->nullable();
+            $table->float('soft_skills_score')->nullable();
+            $table->dateTime('deadline')->nullable();
             $table->text('feedback')->nullable();
             $table->text('resources')->nullable();
             $table->timestamps();

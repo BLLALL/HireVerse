@@ -16,6 +16,7 @@ return new class extends Migration
             $table->id();
             $table->text('question');
             $table->string('applicant_answer')->nullable();
+            $table->float('applicant_score')->nullable();
             $table->enum('difficulty', QuestionDifficulty::values())->default(QuestionDifficulty::Easy);
             $table->foreignId('interview_id')->nullable()->constrained('interviews');
             $table->timestamps();

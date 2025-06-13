@@ -14,8 +14,9 @@ class Interview extends Model
     
     protected $fillable = [
         'id',
-        'date',
-        'score',
+        'deadline',
+        'technical_skills_score',
+        'soft_skills_score',
     ];
 
     public function application(): BelongsTo
