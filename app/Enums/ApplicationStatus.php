@@ -14,7 +14,7 @@ enum ApplicationStatus: string
     case CVProcessed = 'CV processed';
     case CVEligible = 'CV eligible';
     case CVRejected = 'CV rejected';
-    
+
     case InterviewScheduled = 'Interview scheduled';
     case Interviewed = 'Interviewed';
 

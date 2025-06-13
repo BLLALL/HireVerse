@@ -35,7 +35,7 @@ class JobResource extends JsonResource
 
                 $this->mergeWhen(
                     ! $request->routeIs('jobs.index'),
-                    fn() => [
+                    fn () => [
                         'requirements' => $this->requirements,
                         'responsibilities' => $this->responsibilities,
                         'workHours' => $this->work_hours,

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Application extends Model
@@ -18,6 +19,11 @@ class Application extends Model
         'job_id',
     ];
 
+    public function applicant(): BelongsTo
+    {
+        return $this->belongsTo(Applicant::class);
+    }
+
     public function interview(): HasOne
     {
         return $this->hasOne(Interview::class, 'id');
@@ -27,5 +33,5 @@ class Application extends Model
     // {
     //     return $this->belongsTo(Applicant::class);
     // }
-    
+
 }

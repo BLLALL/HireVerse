@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Enums\ApplicationStatus;
+use App\Enums\JobPhase;
 use App\Traits\Filtrable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -9,8 +11,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use App\Enums\ApplicationStatus;
-use App\Enums\JobPhase;
 
 class Job extends Model
 {
@@ -40,7 +40,6 @@ class Job extends Model
     protected $casts = [
         'phase' => JobPhase::class,
     ];
-
 
     public function scopeAvailable()
     {

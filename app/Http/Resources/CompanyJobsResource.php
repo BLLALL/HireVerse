@@ -18,7 +18,7 @@ class CompanyJobsResource extends JsonResource
         $createdAt = $this->created_at->diffForHumans();
         $availableTo = Carbon::make($this->available_to)?->diffForHumans();
         $duration = floor($this->created_at->diffInDays($this->available_to));
-        
+
         return [
             'type' => 'companyJobs',
             'jobId' => $this->id,
@@ -31,8 +31,8 @@ class CompanyJobsResource extends JsonResource
                 'worLdLocation' => $this->work_location,
                 'jobLocation' => $this->job_location,
                 'jobType' => $this->type,
-                'duration' => $duration . ' days',
-            ],        
+                'duration' => $duration.' days',
+            ],
         ];
     }
 }

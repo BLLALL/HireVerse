@@ -10,29 +10,31 @@ use Illuminate\Support\Facades\Storage;
 class QuestionsGenerationService
 {
     protected $client;
+
     protected $apiKey;
     protected const MODEL_NAME = "meta-llama/llama-4-scout-17b-16e-instruct";
     protected $historyFile;
+
     protected $questionHistory = [];
 
     public function __construct()
     {
         $this->apiKey = config('services.groq.key');
-        
+
         $this->client = new Client([
             'base_uri' => 'https://api.groq.com/',
             'headers' => [
                 'Authorization' => "Bearer {$this->apiKey}",
                 'Content-Type' => 'application/json',
-                ]
-            ]);
-            
-        }
-        
+            ],
+        ]);
+
+    }
+
     public function generateQuestions(Job $job, int $questionsPerSkill, int $maxAttempts = 3)
     {
         $this->historyFile = "questions_history/job_{$job->id}.json";
-        
+
         if (Storage::fileExists($this->historyFile)) {
             $this->questionHistory = json_decode(Storage::get($this->historyFile), true);
         } else {
@@ -43,7 +45,7 @@ class QuestionsGenerationService
 
         $skills = $job->skills_titles;
         $jobTitle = $job->title;
-        
+
         foreach ($skills as $skill) {
             $this->questionHistory[$jobTitle][$skill] = $this->questionHistory[$jobTitle][$skill] ?? [];
             $history = &$this->questionHistory[$jobTitle][$skill];
@@ -52,7 +54,7 @@ class QuestionsGenerationService
             $questionsGenerated = 0;
 
             while ($questionsGenerated < $questionsPerSkill && $attempt < $maxAttempts) {
-                $attempt++; 
+                $attempt++;
 
                 $prompt = $this->getPrompt($jobTitle, $skill, $history, $questionsPerSkill - $questionsGenerated);
 
@@ -66,16 +68,16 @@ class QuestionsGenerationService
                                     "content" => "You are an expert technical interviewer creating unique, structured, AI-evaluable interview questions in valid JSON."
                                 ],
                                 [
-                                    "role" => "user",
-                                    "content" => $prompt
-                                ]
+                                    'role' => 'user',
+                                    'content' => $prompt,
+                                ],
                             ],
-                            "temperature" => 0.7,
-                            "max_tokens" => 4096,
-                            "frequency_penalty" => 1.0,
-                            "presence_penalty" => 1.0,
-                            "response_format" => ['type' => 'json_object']
-                        ]
+                            'temperature' => 0.7,
+                            'max_tokens' => 4096,
+                            'frequency_penalty' => 1.0,
+                            'presence_penalty' => 1.0,
+                            'response_format' => ['type' => 'json_object'],
+                        ],
                     ]);
 
                     $body = json_decode($response->getBody()->getContents(), true);
@@ -84,7 +86,7 @@ class QuestionsGenerationService
                     $uniqueQuestions = [];
                     foreach ($newQuestions as $q) {
                         $questionText = $q['question'] ?? '';
-                        if ($questionText && !$this->isQuestionSimilar($questionText, $history)) {
+                        if ($questionText && ! $this->isQuestionSimilar($questionText, $history)) {
                             $uniqueQuestions[] = $q;
                             $history[] = $questionText;
                             $questionsGenerated++;
@@ -99,7 +101,9 @@ class QuestionsGenerationService
                                 'assessment_criteria' => $q['assessment_criteria'] ?? 'N/A',
                             ];
 
-                            if ($questionsGenerated >= $questionsPerSkill) break;
+                            if ($questionsGenerated >= $questionsPerSkill) {
+                                break;
+                            }
                         }
                     }
 
@@ -113,9 +117,8 @@ class QuestionsGenerationService
             }
         }
 
-
         Storage::put($this->historyFile, json_encode($this->questionHistory, JSON_PRETTY_PRINT));
-        
+
         return $allQuestions;
     }
 
@@ -123,14 +126,18 @@ class QuestionsGenerationService
     {
         foreach ($history as $existing) {
             similar_text(strtolower($existing), strtolower($new), $percent);
-            if ($percent > $threshold * 100) return true;
+            if ($percent > $threshold * 100) {
+                return true;
+            }
         }
+
         return false;
     }
 
     protected function getPrompt(string $jobTitle, string $skill, array $history, int $remaining): string
     {
-        $historyText = $history ? implode("\n", array_map(fn($q) => "- {$q}", $history)) : "- None yet.";
+        $historyText = $history ? implode("\n", array_map(fn ($q) => "- {$q}", $history)) : '- None yet.';
+
         return <<<PROMPT
         Generate {$remaining} strictly new, high-quality technical interview questions for a {$jobTitle} focusing on {$skill}.
         Questions must be designed for verbal responses with objectively verifiable answers.

@@ -19,7 +19,7 @@ class CompanyJobApplicationResource extends JsonResource
             'type' => 'jobApplication',
             'applicantId' => $this->applicant_id,
             'attributes' => [
-                'applicantName' => $this->first_name . (empty($this->last_name) ? "" : " {$this->last_name}") ,
+                'applicantName' => $this->first_name.(empty($this->last_name) ? '' : " {$this->last_name}"),
                 'applicantEmail' => $this->email,
                 'appliedAt' => Carbon::make($this->created_at)->format('M. j, Y, g:i a'),
                 'status' => $this->status,

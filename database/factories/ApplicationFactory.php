@@ -3,7 +3,6 @@
 namespace Database\Factories;
 
 use App\Enums\ApplicationStatus;
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -23,7 +22,7 @@ class ApplicationFactory extends Factory
             'status' => $status = fake()->randomElement(ApplicationStatus::values()),
             'cv_score' => ! in_array($status, [
                 'Pending',
-                'CV processing'
+                'CV processing',
             ]) ? fake()->numberBetween(10, 100) : null,
 
         ];

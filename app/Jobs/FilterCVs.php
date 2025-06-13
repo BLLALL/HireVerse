@@ -12,13 +12,13 @@ class FilterCVs implements ShouldQueue
     use Queueable;
 
     public $tries = 3;
+
     public $backoff = [5, 10];
-    
+
     public function __construct(protected Collection $applications) {}
 
     public function handle(): void
     {
         CVFiltrationService::handle($this->applications);
     }
-
 }

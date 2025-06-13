@@ -19,12 +19,13 @@ class RecommendationService
     public function process()
     {
         try {
-            $response = $this->client->get(config('app.ai_services_url') . '/recommendation', [
+            $response = $this->client->get(config('app.ai_services_url').'/recommendation', [
                 'json' => $this->requestData,
             ]);
 
             $body = json_decode($response->getBody(), true);
             $recommendations = $body['recommendations'];
+
             return $recommendations;
         } catch (Exception $e) {
             Log::error($e->getMessage());
@@ -36,18 +37,19 @@ class RecommendationService
     {
         $query = Applicant::with('skills');
 
+
         if (! $allApplicants) {
             $query->whereId(Auth::id());
         }
 
         $applicants = $query->get('id')->map(fn($applicant) => [
             'id' => $applicant->id,
-            'skills' => $applicant->skills->pluck('title')
+            'skills' => $applicant->skills->pluck('title'),
         ]);
 
         $jobs = Job::available()->with('skills')->get('id')->map(fn($job) => [
             'id' => $job->id,
-            'skills' => $job->skills->pluck('title')
+            'skills' => $job->skills->pluck('title'),
         ]);
 
 
@@ -71,6 +73,7 @@ class RecommendationService
         }
 
         $recommendations = $this->prepare($allApplicants)->process();
+
 
         if (! $allApplicants) {
             $results = $recommendations[0]['recommendedJobsIds'];

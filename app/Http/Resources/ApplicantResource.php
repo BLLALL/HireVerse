@@ -27,7 +27,7 @@ class ApplicantResource extends JsonResource
 
                 $this->mergeWhen(
                     ! $request->routeIs(['applicants.index']),
-                    fn() => [
+                    fn () => [
                         'skills' => $this->skills_titles,
                         'college' => $this->college,
                         'department' => $this->department,

@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\ApplicationStatus;
 use App\Events\ApplicantConductedInterview;
 use App\Http\Requests\SubmitApplicantAnswer;
 use App\Models\Interview;
 use App\Models\Question;
 use App\Traits\ApiResponses;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
@@ -16,6 +18,10 @@ class InterviewController extends Controller
 
     public function index(Interview $interview)
     {
+        if (Carbon::now()->greaterThan($interview->deadline)) {
+            return $this->error('Interview deadline has passed', 400);
+        }
+
         $questions = Question::where('interview_id', $interview->id)->orderBy('id')->get(['id', 'question', 'difficulty', 'interview_id']);
 
         return response()->json($questions);
@@ -31,7 +37,7 @@ class InterviewController extends Controller
         $attributes['applicant_answer'] = $file->storeAs($path, $name);
 
         $question->update($attributes);
-
+        
         $applicantCompletedInterview = ! Question::whereInterviewId($question->interview_id)->whereNull('applicant_answer')->exists();
 
         ApplicantConductedInterview::dispatchIf(

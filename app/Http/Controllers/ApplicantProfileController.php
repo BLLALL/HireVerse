@@ -8,12 +8,36 @@ use App\Http\Resources\ApplicantResource;
 use App\Models\Applicant;
 use App\Traits\ApiResponses;
 use App\Traits\FileHelpers;
+use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
 class ApplicantProfileController extends Controller
 {
     use ApiResponses, FileHelpers;
+
+    public function notifications()
+    {
+        $applicant = Auth::user();
+
+        return response()->json([
+            'notifications' => $applicant->notifications->map(fn ($n) => [
+                'id' => $n->id,
+                'message' => $n->data['message'] ?? '',
+                'deadline' => $n->data['deadline'] ?? null,
+                'interview_id' => $n->data['interview_id'] ?? null,
+                'created_at' => $n->created_at,
+                'is_read' => $n->read_at !== null,
+            ]),
+        ]);
+    }
+
+    public function markAsRead(DatabaseNotification $notification)
+    {
+        $notification->markAsRead();
+
+        return response()->noContent();
+    }
 
     public function update(UpdateApplicantProfileRequest $request)
     {
@@ -24,8 +48,9 @@ class ApplicantProfileController extends Controller
             if ($applicant->cv) {
                 Storage::delete($applicant->cv);
             }
-            
+
             $cvFile = $request->file('cv');
+
             $attributes['cv'] = $cvFile->storeAs('applicants/cvs', $this->generateUniqueName($cvFile));
         }
 

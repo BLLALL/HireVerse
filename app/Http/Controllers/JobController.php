@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\AIServices\RecommendationService;
+use App\AIServices\RecommendationService;
 use App\Http\Requests\StoreJobRequest;
 use App\Http\Resources\JobResource;
 use App\Models\Application;
@@ -26,7 +27,7 @@ class JobController extends Controller
         $recommendedJobsIds = $recommendation->handle();
 
         $recommendedJobs = Job::with('company')->whereIn('id', $recommendedJobsIds)->get();
-        
+
         $jobs = Job::available()->with('company')->whereNotIn('id', $recommendedJobsIds)->filter([
             Location::class,
             Search::class,
@@ -35,10 +36,10 @@ class JobController extends Controller
             RangeSalary::class,
             WorkingHours::class,
         ]);
-        
+
         return [
-            'recommendedJobs' => JobResource::collection($recommendedJobs), 
-            'jobs' => JobResource::collection($jobs->latest()->paginate(10))
+            'recommendedJobs' => JobResource::collection($recommendedJobs),
+            'jobs' => JobResource::collection($jobs->latest()->paginate(10)),
         ];
     }
 
@@ -47,7 +48,7 @@ class JobController extends Controller
         $applicantApplied = Application::whereApplicantId(auth()->id())->whereJobId($job->id)->exists();
 
         return JobResource::make($job)->additional([
-            'applicantApplied' => $applicantApplied
+            'applicantApplied' => $applicantApplied,
         ]);
     }
 
@@ -64,7 +65,6 @@ class JobController extends Controller
             'message' => 'Job created successfully',
         ]);
     }
-
 
     private function getAuthenticatedCompany($request): ?\App\Models\Company
     {
@@ -88,6 +88,7 @@ class JobController extends Controller
     public function destroy(Job $job): mixed
     {
         $job->delete();
+
         return response()->json(['message' => 'Job deleted successfully']);
     }
 }

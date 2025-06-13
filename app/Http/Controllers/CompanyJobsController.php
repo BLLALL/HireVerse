@@ -4,18 +4,18 @@ namespace App\Http\Controllers;
 
 use App\Enums\ApplicationStatus;
 use App\Enums\JobPhase;
-use App\Events\InterviewSheduled;
 use App\Events\InterviewPhaseStarted;
+use App\Http\Resources\CompanyJobApplicationResource;
 use App\Http\Resources\CompanyJobsResource;
 use App\Http\Resources\CompanyStatsResource;
-use App\Models\Job;
-use Illuminate\Support\Facades\Pipeline;
-use Illuminate\Auth\Access\AuthorizationException;
-use App\Pipelines\Filters\JobFilters\SearchApplicants;
-use App\Http\Resources\CompanyJobApplicationResource;
 use App\Models\Application;
+use App\Models\Job;
+use App\Pipelines\Filters\JobFilters\SearchApplicants;
 use App\Traits\ApiResponses;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Pipeline;
 
 class CompanyJobsController extends Controller
 {
@@ -32,7 +32,7 @@ class CompanyJobsController extends Controller
                     ->with('company')
                     ->latest()
                     ->get()
-            )
+            ),
         ];
     }
 
@@ -44,7 +44,7 @@ class CompanyJobsController extends Controller
         $applicants = Pipeline::send($query)->through(SearchApplicants::class)->thenReturn()->paginate(10);
 
         return CompanyJobApplicationResource::collection($applicants)->additional([
-            'jobPhase' =>  $job->phase,
+            'jobPhase' => $job->phase,
         ]);
     }
 
@@ -64,10 +64,32 @@ class CompanyJobsController extends Controller
         $job->update(['phase' => JobPhase::Interview]);
 
         InterviewPhaseStarted::dispatch($job);
-        
-        $this->NotifyUsers($job);
 
         return $this->ok('Interview phase has started.');
+    }
+
+    public function getCompletedInterviews(Request $request)
+    {
+        $company = $request->user();
+
+        $interviewedApplicants = DB::table('applicants')
+            ->select(
+                'applicants.id as applicant_id',
+                'applicants.first_name',
+                'applicants.last_name',
+                'applicants.email',
+                'jobs.title as job_title',
+                'interviews.id as interview_id',
+                'interviews.score as technical_score',
+            )
+            ->join('applications', 'applicants.id', '=', 'applications.applicant_id')
+            ->join('jobs', 'applications.job_id', '=', 'jobs.id')
+            ->join('interviews', 'applications.id', '=', 'interviews.application_id')
+            ->where('jobs.company_id', $company->id)
+            ->where('interviews.score', '!=', 0)
+            ->get();
+
+        return response()->json($interviewedApplicants);
     }
 
     public function authorize(Job $job)
@@ -76,16 +98,4 @@ class CompanyJobsController extends Controller
             throw new AuthorizationException;
         }
     }
-
-    private function NotifyUsers($job)
-    {
-       // Get all applicants who are eligible for the interview
-        $applicants = $job->applicants()
-            ->wherePivot('status', ApplicationStatus::CVEligible)
-            ->get();
-        foreach($applicants as $applicant) {
-            event(new InterviewSheduled($applicant->id));
-        }
-    }
-
 }

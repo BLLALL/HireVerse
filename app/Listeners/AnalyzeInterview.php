@@ -3,6 +3,7 @@
 namespace App\Listeners;
 
 use App\AIServices\InterviewAnalysisService;
+use App\Enums\ApplicationStatus;
 use App\Events\ApplicantConductedInterview;
 use App\Models\Question;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -24,6 +25,10 @@ class AnalyzeInterview implements ShouldQueue
     {
         $interview = $event->interview;
 
-        $this->evaluator->evaluateAnswers($interview);
+        $interview->application->status = ApplicationStatus::Interviewed;
+        $interview->application->save();
+        
+
+        $this->evaluator->evaluateResponses($interview);
     }
 }

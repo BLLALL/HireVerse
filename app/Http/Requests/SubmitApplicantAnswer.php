@@ -14,9 +14,7 @@ class SubmitApplicantAnswer extends FormRequest
         $question = request()->route('question');
         $interviewId = $question->interview_id;
 
-        return Application::find($interviewId)->applicant_id == Auth::id()
-            && $question->applicant_answer == null;
-            // && Interview::find($interviewId)->deadline > now();
+        return Application::find($interviewId)->applicant_id == Auth::id() && $question->applicant_answer == null;
     }
 
     public function rules(): array
