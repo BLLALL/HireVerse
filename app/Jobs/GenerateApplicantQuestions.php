@@ -68,7 +68,7 @@ class GenerateApplicantQuestions implements ShouldQueue
         // create interview record with the application id
         // insert the generated questions into questions table with the interview id
 
-        $interview = Interview::firstOrCreate([
+        $interview = Interview::Create([
             'application_id' => $this->application->id,
             'deadline' => now()->addDays(3), // next 3 days from now
         ]);
