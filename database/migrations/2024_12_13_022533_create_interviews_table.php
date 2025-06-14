@@ -21,7 +21,6 @@ return new class extends Migration
             $table->text('resources')->nullable();
             $table->timestamps();
             $table->softDeletes();
-            $table->softDeletes();
         });
     }
 

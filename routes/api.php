@@ -66,36 +66,22 @@ Route::get('storage/{filePath}', function ($filePath) {
 
 Route::get('test', function () {
 
-    // Storage::put('interviews/56/questions.json', Storage::disk('public')->get('interviews/82/questions.json'));
+    // $job = Job::find(1);
 
-    // $questions = json_decode(, true);
-
-
-    // $interview = Application::whereApplicantId(1)->whereJobId(1)->first()->interview()->create();
-
-    // $questions = collect($questions)->map(function ($q) use ($interview) {
-    //     return [
-    //         'question' => $q['question'],
-    //         'difficulty' => $q['difficulty'],
-    //         'interview_id' => $interview->id
-    //     ];
-    // })->toArray();
-
-    // Question::insert($questions);
-
-    // ApplicantConductedInterview::dispatch(Interview::find(56));
+    // ApplicantConductedInterview::dispatch(Interview::find(74));
 
     // $questions = Question::where('interview_id', 1)->get();
     // InterviewPhaseStarted::dispatch($job);
     // return response()->json($questions);
 
 
-    //Application::whereJobId($job->id)->update([
-    //    'status' => ApplicationStatus::Pending,
-    //   'cv_score' => null
-    //]);
 
-    //ApplicantApplied::dispatch($job);
+    // Application::whereJobId($job->id)->update([
+    //    'status' => ApplicationStatus::Pending,
+    //    'cv_score' => null
+    // ]);
+
+    // ApplicantApplied::dispatch($job);
 
 
     return 'HireVerse - HierServe';

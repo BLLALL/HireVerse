@@ -24,7 +24,11 @@ class GenerateApplicantQuestions implements ShouldQueue
     {
         $generatedQuestions = $generator->generateQuestions(job: $this->j, questionsPerSkill: 3);
 
-        $interview = $this->application->interview()->create();
+        $interview = $this->application->interview()->create([
+            'deadline' => now()->addDays(3),
+        ]);
+        
+        $this->application->update(['status' => ApplicationStatus::InterviewScheduled]);
 
         $questionsFilePath = "interviews/{$interview->id}/questions.json";
         Storage::put($questionsFilePath, json_encode($generatedQuestions, JSON_PRETTY_PRINT));
@@ -35,10 +39,10 @@ class GenerateApplicantQuestions implements ShouldQueue
                 'question' => $q['question'],
                 'difficulty' => $q['difficulty'],
             ];
-        
         }, $generatedQuestions);
 
         Question::insert($questions);
+
 
         $this->NotifyUsers($this->j, $interview);
 
@@ -46,7 +50,6 @@ class GenerateApplicantQuestions implements ShouldQueue
 
     private function NotifyUsers(Job $job, $interview)
     {
-
         $applicant = $this->application->applicant;
         $applicant->notify(new InterviewScheduled($interview));
         Log::info("Interview scheduled notification sent to applicant: {$applicant->id} for job: {$job->id}");

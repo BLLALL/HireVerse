@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\AIServices\RecommendationService;
-use App\AIServices\RecommendationService;
 use App\Http\Requests\StoreJobRequest;
 use App\Http\Resources\JobResource;
 use App\Models\Application;
