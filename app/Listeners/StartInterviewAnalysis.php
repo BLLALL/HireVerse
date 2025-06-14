@@ -9,7 +9,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Log;
 
-class AnalyzeInterview implements ShouldQueue
+class StartInterviewAnalysis implements ShouldQueue
 {
     
     public function viaQueue(): string
@@ -23,7 +23,6 @@ class AnalyzeInterview implements ShouldQueue
     public function handle(ApplicantConductedInterview $event): void
     {
         $interview = $event->interview;
-
-        $this->evaluator->evaluateAnswers($interview);
+        $this->evaluator->evaluateResponses($interview);
     }
 }

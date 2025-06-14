@@ -93,7 +93,7 @@ class QuestionsGenerationService
 
                             $allQuestions[] = [
                                 // 'job_title' => $jobTitle,
-                                // 'skill' => $skill,
+                                'skill' => $skill,
                                 'question' => $q['question'] ?? 'N/A',
                                 'difficulty' => $q['difficulty'] ?? 'N/A',
                                 'expected_keywords' => $q['keywords'] ?? [],

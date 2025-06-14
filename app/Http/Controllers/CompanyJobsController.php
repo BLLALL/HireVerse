@@ -52,8 +52,12 @@ class CompanyJobsController extends Controller
     {
         $this->authorize($job);
 
-        if ($job->phase != JobPhase::Revision) {
+        if ($job->phase == JobPhase::CVFiltration) {
             return $this->error("Some CVs haven't been filtered yet!", 409);
+        }
+        
+        if ($job->phase == JobPhase::Interview) {
+            return $this->error("Minimum CV score has already been set!", 409);
         }
 
         $minCVScore = $request->validate(['min_score' => 'required|decimal:0,2|min:1|max:100'])['min_score'];
@@ -65,7 +69,7 @@ class CompanyJobsController extends Controller
 
         InterviewPhaseStarted::dispatch($job);
 
-        return $this->ok('Interview phase has started.');
+        return $this->ok('Interview phase started.');
     }
 
     public function getCompletedInterviews(Request $request)
@@ -80,13 +84,13 @@ class CompanyJobsController extends Controller
                 'applicants.email',
                 'jobs.title as job_title',
                 'interviews.id as interview_id',
-                'interviews.score as technical_score',
+                'interviews.technical_skills_score as technical_score',
             )
             ->join('applications', 'applicants.id', '=', 'applications.applicant_id')
             ->join('jobs', 'applications.job_id', '=', 'jobs.id')
             ->join('interviews', 'applications.id', '=', 'interviews.application_id')
             ->where('jobs.company_id', $company->id)
-            ->where('interviews.score', '!=', 0)
+            ->whereNotNull('interviews.technical_skills_score')
             ->get();
 
         return response()->json($interviewedApplicants);

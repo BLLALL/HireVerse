@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Events\ApplicantConductedInterview;
 use App\Http\Requests\SubmitApplicantAnswer;
+use App\Models\Application;
 use App\Models\Interview;
 use App\Models\Question;
 use App\Traits\ApiResponses;
@@ -34,10 +35,11 @@ class InterviewController extends Controller
 
         $applicantCompletedInterview = ! Question::whereInterviewId($question->interview_id)->whereNull('applicant_answer')->exists();
 
-        ApplicantConductedInterview::dispatchIf(
-            $applicantCompletedInterview,
-            $question->interview()->first()
-        );
+        if ($applicantCompletedInterview) {
+            Application::find($question->interview_id)->update(['status' => ApplicationStatus::Interviewed]);
+            ApplicantConductedInterview::dispatch($question->interview()->first());
+        }
+
 
         return response()->json([
             'message' => 'Applicant answer uploaded successfully',
@@ -60,9 +62,10 @@ class InterviewController extends Controller
             $sum += $score;
         }
         
-        Log::info("$soft");
-
-        $interview->update(['technical_skills_score' => (float) $sum / $questions->count()]);
+        $interview->update([
+            'technical_skills_score' => round((float) $sum / $questions->count(), 2),
+            'soft_skills_score' => round((float) $soft['overall'], 2),
+        ]);
     }
 
 }

@@ -44,7 +44,7 @@ class InterviewAnalysisService
     }
 
     
-    public function evaluateAnswers(Interview $interview)
+    public function evaluateResponses(Interview $interview)
     {
         $this->prepare($interview)->process();
     }
