@@ -2,15 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Question;
-use App\Models\Interview;
-use App\Models\Application;
-use App\Traits\ApiResponses;
-use Illuminate\Http\Request;
 use App\Enums\ApplicationStatus;
-use Illuminate\Support\Facades\Log;
 use App\Events\ApplicantConductedInterview;
 use App\Http\Requests\SubmitApplicantAnswer;
+use App\Models\Application;
+use App\Models\Interview;
+use App\Models\Question;
+use App\Traits\ApiResponses;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class InterviewController extends Controller
 {
@@ -28,7 +28,8 @@ class InterviewController extends Controller
         $file = $request->file('applicant_answer');
 
         $path = "interviews/{$question->interview_id}/answers";
-        $name = "q-{$question->id}.{$file->getClientOriginalExtension()}";
+        $extension = $file->getClientOriginalExtension() ?? 'webm';
+        $name = "q-{$question->id}.{$extension}";
 
         $attributes['applicant_answer'] = $file->storeAs($path, $name);
 
