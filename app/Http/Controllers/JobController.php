@@ -22,19 +22,8 @@ class JobController extends Controller
     use ApiResponses;
 
     public function index(RecommendationService $recommendation): mixed
-    {
-        $key = 'recommended_for_applicant_'.Auth::id();
-
-        $recommendedJobs = [];
-        $recommendedJobsIds = Cache::get($key, []);
-
-        if (empty($recommendedJobsIds) && Auth::id()) {
-            $recommendedJobsIds = $recommendation->handle();
-
-            if (count($recommendedJobsIds)) {
-                Cache::put($key, $recommendedJobsIds, now()->addHours(6));
-            }
-        }
+    {   
+        $recommendedJobsIds = $recommendation->handle();
 
         $recommendedJobs = Job::with('company')->whereIn('id', $recommendedJobsIds)->get();
 

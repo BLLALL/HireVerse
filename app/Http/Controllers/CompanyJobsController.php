@@ -2,20 +2,21 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\ApplicationStatus;
+use App\Models\Job;
 use App\Enums\JobPhase;
+use App\Models\Application;
+use App\Traits\ApiResponses;
+use Illuminate\Http\Request;
+use App\Enums\ApplicationStatus;
+use Illuminate\Support\Facades\DB;
 use App\Events\InterviewPhaseStarted;
-use App\Http\Resources\CompanyJobApplicationResource;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Pipeline;
 use App\Http\Resources\CompanyJobsResource;
 use App\Http\Resources\CompanyStatsResource;
-use App\Models\Application;
-use App\Models\Job;
-use App\Pipelines\Filters\JobFilters\SearchApplicants;
-use App\Traits\ApiResponses;
 use Illuminate\Auth\Access\AuthorizationException;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Pipeline;
+use App\Http\Resources\CompanyJobApplicationResource;
+use App\Pipelines\Filters\JobFilters\SearchApplicants;
 
 class CompanyJobsController extends Controller
 {
@@ -52,8 +53,12 @@ class CompanyJobsController extends Controller
     {
         $this->authorize($job);
 
-        if ($job->phase != JobPhase::Revision) {
+        if ($job->phase == JobPhase::CVFiltration) {
             return $this->error("Some CVs haven't been filtered yet!", 409);
+        }
+        
+        if ($job->phase == JobPhase::Interview) {
+            return $this->error("Minimum CV score has already been set!", 409);
         }
 
         $minCVScore = $request->validate(['min_score' => 'required|decimal:0,2|min:1|max:100'])['min_score'];
@@ -65,10 +70,10 @@ class CompanyJobsController extends Controller
 
         InterviewPhaseStarted::dispatch($job);
 
-        return $this->ok('Interview phase has started.');
+        return $this->ok('Interview phase started.');
     }
 
-    public function getCompletedInterviews(Request $request)
+      public function getCompletedInterviews(Request $request)
     {
         $company = $request->user();
 
@@ -77,18 +82,27 @@ class CompanyJobsController extends Controller
                 'applicants.id as applicant_id',
                 'applicants.first_name',
                 'applicants.last_name',
-                'applicants.email',
-                'jobs.title as job_title',
                 'interviews.id as interview_id',
-                'interviews.score as technical_score',
+                'interviews.technical_skills_score as technical_score',
+                'interviews.soft_skills_score as soft_score',
             )
             ->join('applications', 'applicants.id', '=', 'applications.applicant_id')
             ->join('jobs', 'applications.job_id', '=', 'jobs.id')
             ->join('interviews', 'applications.id', '=', 'interviews.application_id')
             ->where('jobs.company_id', $company->id)
-            ->where('interviews.score', '!=', 0)
+            ->whereNotNull('interviews.technical_skills_score')
             ->get();
 
+        $interviewedApplicants = $interviewedApplicants->map(function ($interview) {
+           $answersDir = "interviews/{$interview->interview_id}/answers";
+
+           $files = Storage::files($answersDir);
+            $interview->video_urls = array_map(function ($file) use ($answersDir) {
+                return Storage::url($file);
+            }, $files);
+
+            return $interview;
+        });
         return response()->json($interviewedApplicants);
     }
 

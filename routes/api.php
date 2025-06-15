@@ -2,12 +2,15 @@
 
 use App\Enums\ApplicationStatus;
 use App\Events\ApplicantApplied;
+use App\Events\ApplicantConductedInterview;
 use App\Events\InterviewPhaseStarted;
 use App\Http\Controllers\ApplicantController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\CurrentUserController;
+use App\Http\Controllers\InterviewController;
 use App\Http\Controllers\JobController;
 use App\Http\Controllers\VerificationController;
+use App\Models\Interview;
 use App\Models\Application;
 use App\Models\Job;
 use App\Models\Question;
@@ -49,6 +52,10 @@ Route::middleware(['auth:sanctum', 'ability:*', 'verified'])->group(function () 
     Route::get('auth/user', CurrentUserController::class);
 });
 
+Route::middleware('signed')->post('interviews/{interview}/analysis-callback', [InterviewController::class, 'storeResults'])
+    ->name('interviews.analysis.callback');
+
+
 Route::get('storage/{filePath}', function ($filePath) {
     if (! Storage::exists($filePath)) {
         return response()->json(['message' => 'File not found.'], 404);
@@ -61,16 +68,21 @@ Route::get('test', function () {
 
     // $job = Job::find(1);
 
+    // ApplicantConductedInterview::dispatch(Interview::find(74));
+
     // $questions = Question::where('interview_id', 1)->get();
     // InterviewPhaseStarted::dispatch($job);
     // return response()->json($questions);
 
+
+
     // Application::whereJobId($job->id)->update([
-    //     'status' => ApplicationStatus::Pending,
-    //     'cv_score' => null
+    //    'status' => ApplicationStatus::Pending,
+    //    'cv_score' => null
     // ]);
 
     // ApplicantApplied::dispatch($job);
+
 
     return 'HireVerse - HierServe';
 });

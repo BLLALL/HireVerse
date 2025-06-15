@@ -4,7 +4,7 @@ use App\Http\Controllers\ApplicantJobsController;
 use App\Http\Controllers\ApplicantProfileController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\OAuthController;
-use App\Http\Controllers\TechnicalInterviewController;
+use App\Http\Controllers\InterviewController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth:sanctum', 'ability:*', 'verified', 'can:applicant'])->group(function () {
@@ -22,8 +22,9 @@ Route::middleware(['auth:sanctum', 'ability:*', 'verified', 'can:applicant'])->g
         Route::get('upcoming-interviews', [ApplicantJobsController::class, 'getUpcomingInterviews']);
     });
 
-    Route::get('interviews/{interview}/questions', [TechnicalInterviewController::class, 'index']);
-    Route::patch('questions/{questions}/answer', [TechnicalInterviewController::class, 'update']);
+    Route::get('interviews/{interview}/questions', [InterviewController::class, 'index']);
+    Route::patch('questions/{question}/answer', [InterviewController::class, 'submitAnswer']);
+    Route::get('interviews/{interview}/questions', [InterviewController::class, 'index']);
 
     Route::get('notifications', [ApplicantProfileController::class, 'notifications']);
     Route::patch('notifications/{notification}/read', [ApplicantProfileController::class, 'markAsRead']);

@@ -12,12 +12,13 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('interviews', function (Blueprint $table) {
-            $table->id();
-            $table->integer('score')->default(0);
+            $table->unsignedBigInteger('id')->primary();
+            $table->foreign('id')->references('id')->on('applications')->cascadeOnDelete();
+            $table->float('technical_skills_score')->nullable();
+            $table->float('soft_skills_score')->nullable();
             $table->dateTime('deadline')->nullable();
             $table->text('feedback')->nullable();
             $table->text('resources')->nullable();
-            $table->foreignId('application_id')->nullable()->constrained('applications')->onDelete('cascade');
             $table->timestamps();
             $table->softDeletes();
         });

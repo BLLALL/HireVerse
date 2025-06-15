@@ -50,7 +50,7 @@ class CVFiltrationService
         try {
             DB::beginTransaction();
 
-            $response = app(Client::class)->post(config('app.ai_services_url').'/cv-filtration', [
+            $response = app(Client::class)->get(config('app.ai_services_url').'/cv-filtration', [
                 'multipart' => $this->requestData,
             ]);
 
