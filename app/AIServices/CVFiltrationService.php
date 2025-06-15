@@ -21,27 +21,27 @@ class CVFiltrationService
 
     public function __construct(protected Collection $applications)
     {
-        foreach ($this->applications as $application) {
+        // foreach ($this->applications as $application) {
 
-            $cvPath = $application->cv;
-            $fileName = substr($cvPath, strrpos($cvPath, '/') + 1);
+        //     $cvPath = $application->cv;
+        //     $fileName = substr($cvPath, strrpos($cvPath, '/') + 1);
 
-            if (Storage::fileMissing($application->cv)) {
-                throw new Exception("File \"{$application->cv}\" not found!");
-            }
+        //     if (Storage::fileMissing($application->cv)) {
+        //         throw new Exception("File \"{$application->cv}\" not found!");
+        //     }
 
-            $this->requestData[] = [
-                'name' => 'cvFiles',
-                'contents' => fopen(Storage::path($application->cv), 'r'),
-                'filename' => $fileName,
-            ];
-        }
+        //     $this->requestData[] = [
+        //         'name' => 'cvFiles',
+        //         'contents' => fopen(Storage::path($application->cv), 'r'),
+        //         'filename' => $fileName,
+        //     ];
+        // }
 
         $this->job = Job::find($this->applications[0]->job_id);
 
-        $this->requestData[] = [
-            'name' => 'jobDescription',
-            'contents' => JobResource::make($this->job)->toJson(),
+        $this->requestData = [
+            'jobDescription' => JobResource::make($this->job)->toJson(),
+            'cvsPaths' => $applications->pluck('cv'),
         ];
     }
 
@@ -51,7 +51,7 @@ class CVFiltrationService
             DB::beginTransaction();
 
             $response = app(Client::class)->get(config('app.ai_services_url').'/cv-filtration', [
-                'multipart' => $this->requestData,
+                'json' => $this->requestData,
             ]);
 
             $body = json_decode($response->getBody(), true);

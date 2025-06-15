@@ -52,7 +52,7 @@ Route::middleware(['auth:sanctum', 'ability:*', 'verified'])->group(function () 
     Route::get('auth/user', CurrentUserController::class);
 });
 
-Route::middleware('signed')->post('interviews/{interview}/analysis-callback', [InterviewController::class, 'storeResults'])
+Route::post('interviews/{interview}/analysis-callback', [InterviewController::class, 'storeResults'])
     ->name('interviews.analysis.callback');
 
 
