@@ -21,6 +21,7 @@ class Interview extends Model
     protected $casts = [
         'deadline' => 'datetime',
     ];
+
     public function application(): HasOne
     {
         return $this->hasOne(Application::class);

@@ -50,8 +50,8 @@ class InterviewScheduled extends Notification implements ShouldQueue
     {
         return [
             'message' => 'Your interview has been scheduled.',
-            'deadline' => $this->interview->deadline->toIso8601String(),  
-            'interview_id' => $this->interview->id, 
+            'deadline' => $this->interview->deadline->toIso8601String(),
+            'interview_id' => $this->interview->id,
         ];
     }
 
@@ -59,8 +59,8 @@ class InterviewScheduled extends Notification implements ShouldQueue
     {
         return new BroadcastMessage([
             'message' => 'Your interview has been scheduled.',
-            'deadline' => $this->interview->deadline->toIso8601String(),  
-            'interview_id' => $this->interview->id, 
+            'deadline' => $this->interview->deadline->toIso8601String(),
+            'interview_id' => $this->interview->id,
         ]);
     }
 }

@@ -27,6 +27,7 @@ Route::middleware(['auth:sanctum', 'ability:*', 'verified', 'can:applicant'])->g
 
     Route::get('notifications', [ApplicantProfileController::class, 'notifications']);
     Route::patch('notifications/{notification}/read', [ApplicantProfileController::class, 'markAsRead']);
+    Route::delete('notifications/{notification}', [ApplicantProfileController::class, 'deleteNotification']);
 
     Route::post('logout', [AuthController::class, 'logout']);
 });

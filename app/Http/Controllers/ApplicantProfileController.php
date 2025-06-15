@@ -39,6 +39,17 @@ class ApplicantProfileController extends Controller
         return response()->noContent();
     }
 
+    public function deleteNotification(DatabaseNotification $notification)
+    {
+        if ($notification->notifiable_id !== auth()->id()) {
+            return $this->error('You are not authorized to delete this notification.', 403);
+        }
+
+        $notification->delete();
+
+        return $this->success('Notification deleted successfully.');
+    }
+
     public function update(UpdateApplicantProfileRequest $request)
     {
         $attributes = $request->validated();
