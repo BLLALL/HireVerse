@@ -73,7 +73,7 @@ class CompanyJobsController extends Controller
         return $this->ok('Interview phase started.');
     }
 
-      public function getCompletedInterviews(Request $request)
+      public function getCompletedInterviews(Request $request, Job $job)
     {
         $company = $request->user();
 
@@ -90,6 +90,7 @@ class CompanyJobsController extends Controller
             ->join('jobs', 'applications.job_id', '=', 'jobs.id')
             ->join('interviews', 'applications.id', '=', 'interviews.application_id')
             ->where('jobs.company_id', $company->id)
+            ->where('jobs.id', $job->id)
             ->whereNotNull('interviews.technical_skills_score')
             ->get();
 
